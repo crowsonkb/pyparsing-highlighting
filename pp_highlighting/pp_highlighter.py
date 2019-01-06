@@ -13,16 +13,33 @@ class PPHighlighter(Lexer):
     def __init__(self, parser_factory, *, pygments_styles=False):
         self._fragments = {}
         self._pygments_styles = pygments_styles
-        self._parser = parser_factory(self._make_fragment_action)
+        self._parser = parser_factory(self.parser_wrapper)
 
-    def _make_fragment_action(self, style, parser=None):
+    def parser_wrapper(self, style, expr):
+        """Wraps a pyparsing parse expression to capture text fragments.
+
+        :meth:`parser_wrapper` wraps the given parse expression in
+        :func:`pyparsing.originalTextFor` to capture the original text it
+        matched, and returns the modified parse expression. You must add
+        parse actions to the modified parse expression with
+        :meth:`addParseAction` instead of :meth:`setParseAction`, or it will
+        stop capturing text.
+
+        Args:
+            style (Union[str, pygments.token.Token]): The style to set for this
+                text fragment, as a string or a Pygments token.
+            expr (pyparsing.ParserElement): The pyparsing parser to wrap.
+
+        Returns:
+            pyparsing.ParserElement: The wrapped parser.
+        """
         def action(s, loc, toks):
-            self._fragments[loc] = (style, s[loc:loc + len(toks[0])])
-        if parser is None:
-            return action
-        new_parser = parser.copy()
-        new_parser.setParseAction(action)
-        return new_parser
+            text = s[toks['_original_start']:toks['_original_end']]
+            self._fragments[loc] = (style, text)
+            return toks[1:-1]
+        new_expr = pp.originalTextFor(expr)
+        new_expr.setParseAction(action)
+        return new_expr
 
     def _highlight(self, s):
         default_style = Token.Text if self._pygments_styles else ''
