@@ -88,10 +88,9 @@ class PPHighlighter(Lexer):
     @classmethod
     def _pygments_css_class(cls, token):
         try:
-            css_class = STANDARD_TYPES[token]
+            return STANDARD_TYPES[token]
         except KeyError:
-            css_class = cls._pygments_css_class(token.parent)
-        return css_class
+            return cls._pygments_css_class(token.parent)
 
     def highlight_html(self, s):
         """Highlights a string, returning HTML.
