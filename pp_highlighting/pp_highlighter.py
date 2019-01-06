@@ -46,8 +46,10 @@ class PPHighlighter(Lexer):
         default_style = Token.Text if self._pygments_styles else ''
 
         self._fragments = {}
+        # TODO: restart on ParseBaseException
         try:
-            self._parser.parseString(s)
+            for _ in self._parser.scanString(s):
+                pass
         except pp.ParseBaseException:
             pass
 
