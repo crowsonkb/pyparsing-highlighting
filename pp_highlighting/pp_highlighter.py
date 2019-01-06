@@ -123,5 +123,6 @@ class PPHighlighter(Lexer):
         return ''.join(tags)
 
     def lex_document(self, document):
+        # TODO: handle exceptions that arise during highlighting
         lines = list(split_lines(self.highlight(document.text)))
         return lambda i: lines[i]
