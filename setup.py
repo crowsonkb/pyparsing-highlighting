@@ -19,6 +19,7 @@ setup(
     data_files=[('', ['LICENSE', 'README.rst', 'requirements.txt'])],
     include_package_data=True,
     install_requires=(BASE / 'requirements.txt').read_text().strip().split('\n'),
+    python_requires='>=3.5',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
