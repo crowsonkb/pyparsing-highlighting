@@ -10,6 +10,7 @@ from .repl import repl
 
 
 def lassoc_mapreduce(func):
+    """Parses left-associative binary operators without left recursion."""
     def reducer(t):
         accum = t[0]
         for i in range(2, len(t), 2):
@@ -19,6 +20,11 @@ def lassoc_mapreduce(func):
 
 
 def parser_factory(styler=None):
+    """Builds the calculator parser.
+
+    If `styler` is specified, parse expressions to be syntax highlighted will
+    be assigned classes.
+    """
     if styler is None:
         styler = lambda *args: args[1]
 
@@ -46,6 +52,7 @@ def parser_factory(styler=None):
 
 
 def main():
+    """The main function."""
     parser = parser_factory()
     style = Style([('op', '#b625b4 bold'), ('value', '#b27a01')])
     repl(parser, parser_factory, style=style)
