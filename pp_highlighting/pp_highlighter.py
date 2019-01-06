@@ -14,6 +14,7 @@ class PPHighlighter(Lexer):
         self._fragments = {}
         self._pygments_styles = pygments_styles
         self._parser = parser_factory(self.parser_wrapper)
+        self._parser.parseWithTabs()
 
     def parser_wrapper(self, style, expr):
         """Wraps a pyparsing parse expression to capture text fragments.
