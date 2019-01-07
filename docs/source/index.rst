@@ -10,6 +10,8 @@ Welcome to pyparsing-highlighting's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+- `View on GitHub <https://github.com/crowsonkb/pyparsing-highlighting>`_
+
 .. include:: ../../README.rst
    :start-line: 3
 
