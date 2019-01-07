@@ -97,12 +97,15 @@ class PPHighlighter(Lexer):
             e.streamline()
 
         loc = 0
+        preloc = None
         pp.ParserElement.resetCache()
         while loc <= len(s):
             try:
                 preloc = self._parser.preParse(s, loc)
                 nextloc, _ = self._parser._parse(s, preloc, callPreParse=False)
             except Exception as err:  # pylint: disable=broad-except
+                if preloc is None:
+                    raise
                 loc = preloc + 1
                 if not isinstance(err, pp.ParseBaseException):
                     msg = 'Exception during parsing: {}: {}'
