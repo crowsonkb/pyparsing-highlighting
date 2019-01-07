@@ -13,22 +13,58 @@ __all__ = ['PPHighlighter']
 
 
 class PPHighlighter(Lexer):
-    """Syntax highlighting with pyparsing."""
+    """Syntax highlighting with pyparsing.
+
+    This class can be used to highlight text via its :meth:`highlight` method
+    (for :func:`prompt_toolkit.print_formatted_text`), its
+    :meth:`highlight_html` method, and by passing it as the `lexer` argument to
+    a :class:`prompt_toolkit.PromptSession`.
+    """
+
     def __init__(self, parser_factory, *, pygments_styles=False):
+        """Constructs a new :class:`PPHighlighter`.
+
+        You should supply a parser factory, a function that takes one argument
+        and returns a parse expression. :class:`PPHighlighter` will pass its
+        :meth:`styler` method as the argument (see :meth:`styler` for more
+        details). :meth:`styler` modifies parse expressions to capture and style
+        the text they match. The `style` argument to :meth:`styler` can be
+        either a prompt_toolkit style string or a Pygments token.
+
+        Examples:
+
+            >>> def parser_factory(styler):
+            >>>     a = styler('class:int', ppc.integer)
+            >>>     return pp.delimitedList(a)
+            >>> pph = PPHighlighter(parser_factory)
+            >>> pph.highlight('1, 2, 3')
+            FormattedText([('class:int', '1'), ('', ', '), ('class:int', '2'),
+            ('', ', '), ('class:int', '3')])
+
+            :class:`FormattedText` instances can be passed to
+            :func:`prompt_toolkit.print_formatted_text`.
+
+        Args:
+            parser_factory (Callable[[Callable], pyparsing.ParserElement]): The
+                parser factory.
+            pygments_styles (bool): Whether or not the parser is styled using
+                Pygments tokens.
+        """
         self._fragments = {}
         self._pygments_styles = pygments_styles
-        self._parser = parser_factory(self.parser_wrapper)
+        self._parser = parser_factory(self.styler)
         self._parser.parseWithTabs()
 
-    def parser_wrapper(self, style, expr):
+    def styler(self, style, expr):
         """Wraps a pyparsing parse expression to capture text fragments.
 
-        :meth:`parser_wrapper` wraps the given parse expression in
+        :meth:`styler` wraps the given parse expression in
         :func:`pyparsing.originalTextFor` to capture the original text it
-        matched, and returns the modified parse expression. You must add
-        parse actions to the modified parse expression with
-        :meth:`addParseAction` instead of :meth:`setParseAction`, or it will
-        stop capturing text.
+        matched, and returns the modified parse expression. You must add parse
+        actions to the modified parse expression with :meth:`addParseAction`
+        instead of :meth:`setParseAction`, or it will stop capturing text. The
+        `style` argument can be either a prompt_toolkit style string or a
+        Pygments token.
 
         Args:
             style (Union[str, pygments.token.Token]): The style to set for this
@@ -102,7 +138,7 @@ class PPHighlighter(Lexer):
             s (str): The input string.
 
         Returns:
-            FormattedText: The resulting list of prompt-toolkit text fragments.
+            FormattedText: The resulting list of prompt_toolkit text fragments.
         """
         fragments = self._highlight(s)
         if self._pygments_styles:
