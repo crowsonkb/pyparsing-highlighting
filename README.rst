@@ -6,7 +6,7 @@ Syntax highlighting with `pyparsing <https://github.com/pyparsing/pyparsing>`_, 
 Requirements
 ------------
 
-- Python 3.5+
+- `Python <https://www.python.org>`_ 3.5+
 - `prompt_toolkit <https://github.com/prompt-toolkit/python-prompt-toolkit>`_ 2.0+
 - `pygments <http://pygments.org>`_
 - `pyparsing <https://github.com/pyparsing/pyparsing>`_
