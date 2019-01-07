@@ -107,6 +107,16 @@ class TestPPHighlighter(unittest.TestCase):
         with self.assertRaises(IndexError):
             lines(2)
 
+    def test_restart(self):
+        pph = PPHighlighter(parser_factory)
+        fragments = pph.highlight('(1 (a 2))')
+        expected = [('', '('),
+                    ('class:int', '1'),
+                    ('', ' (a '),
+                    ('class:int', '2'),
+                    ('', '))')]
+        self.assertEqual(fragments, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
