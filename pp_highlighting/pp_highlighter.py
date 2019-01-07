@@ -3,6 +3,7 @@
 import html
 from warnings import warn
 
+from prompt_toolkit import print_formatted_text
 from prompt_toolkit.formatted_text import (FormattedText, PygmentsTokens,
                                            split_lines, to_formatted_text)
 from prompt_toolkit.lexers import Lexer
@@ -158,6 +159,20 @@ class PPHighlighter(Lexer):
         if self._pygments_styles:
             return to_formatted_text(PygmentsTokens(fragments))
         return fragments
+
+    def print(self, *values, **kwargs):
+        """::
+
+            print(*values, sep=' ', end='\\n', file=None, flush=False,
+                  style=None, output=None, color_depth=None,
+                  style_transformation=None, include_default_pygments_style=None)
+
+        Highlights and prints the values to a stream, or to `sys.stdout` by
+        default. It calls :func:`prompt_toolkit.print_formatted_text` internally
+        and takes the same keyword arguments as it (compatible with the builtin
+        :func:`print`).
+        """
+        print_formatted_text(*map(self.highlight, map(str, values)), **kwargs)
 
     @classmethod
     def _pygments_css_class(cls, token):
