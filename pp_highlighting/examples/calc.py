@@ -41,14 +41,13 @@ def lassoc_mapreduce(func):
     return reducer
 
 
-def parser_factory(styler=None):
+def parser_factory(styler_=None):
     """Builds the calculator parser.
 
-    If `styler` is specified, parse expressions to be syntax highlighted will
+    If `styler_` is specified, parse expressions to be syntax highlighted will
     be assigned classes.
     """
-    if styler is None:
-        styler = lambda *args: args[1]
+    styler = styler_ if styler_ else lambda *args: args[1]
 
     LPAR, RPAR = map(pp.Suppress, '()')
     plus, minus, star, slash = map(lambda s: styler('class:op', pp.Literal(s)), '+-*/')
@@ -60,14 +59,17 @@ def parser_factory(styler=None):
     atom = value | LPAR + expr + RPAR
 
     neg = minus + atom
-    neg.addParseAction(lambda t: -t[1])
+    if not styler_:
+        neg.addParseAction(lambda t: -t[1])
     signed_atom = atom | neg
 
     term = signed_atom + pp.ZeroOrMore((star | slash) + signed_atom)
-    term.addParseAction(lassoc_mapreduce(lambda op: {'*': mul, '/': truediv}[op]))
+    if not styler_:
+        term.addParseAction(lassoc_mapreduce(lambda op: {'*': mul, '/': truediv}[op]))
 
     expr <<= term + pp.ZeroOrMore((plus | minus) + term)
-    expr.addParseAction(lassoc_mapreduce(lambda op: {'+': add, '-': sub}[op]))
+    if not styler_:
+        expr.addParseAction(lassoc_mapreduce(lambda op: {'+': add, '-': sub}[op]))
     expr.setName('expr')
 
     return expr
