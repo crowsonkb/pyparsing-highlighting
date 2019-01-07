@@ -1,6 +1,8 @@
 pyparsing-highlighting
 ======================
 
+- Read the `documentation on readthedocs <https://pyparsing-highlighting.readthedocs.io/en/latest/>`_.
+
 Syntax highlighting with `pyparsing <https://github.com/pyparsing/pyparsing>`_, supporting both HTML output and `prompt_toolkit <https://github.com/prompt-toolkit/python-prompt-toolkit>`_–style terminal output. The ``PPHighlighter`` class can also be used as a lexer for syntax highlighting as you type in ``prompt_toolkit``. It is compatible with existing `Pygments <http://pygments.org>`_ styles.
 
 Requirements

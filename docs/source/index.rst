@@ -13,7 +13,7 @@ Welcome to pyparsing-highlighting's documentation!
 - `View on GitHub <https://github.com/crowsonkb/pyparsing-highlighting>`_
 
 .. include:: ../../README.rst
-   :start-line: 3
+   :start-line: 5
 
 Module pp_highlighting
 ----------------------
