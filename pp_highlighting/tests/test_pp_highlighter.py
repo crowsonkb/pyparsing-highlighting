@@ -1,4 +1,4 @@
-"""Unit tests for pp_highlighting."""
+"""Unit tests for pp_highlighter."""
 
 # pylint: disable=missing-docstring
 
