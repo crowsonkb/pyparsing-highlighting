@@ -40,6 +40,15 @@ def parser_factory_multiclass(styler):
     return c
 
 
+def parser_factory_htmlescape(styler):
+    LANG, RANG = map(pp.Suppress, '<>')
+    a = styler('class:int', ppc.integer)
+    b = styler('class:float', ppc.fnumber)
+    c = pp.Forward()
+    c <<= a ^ b | LANG + pp.ZeroOrMore(c) + RANG
+    return c
+
+
 def parser_factory_exception(styler):
     def exception():
         raise RuntimeError('test')
@@ -88,6 +97,12 @@ class TestPPHighlighter(unittest.TestCase):
         pph = PPHighlighter(parser_factory_multiclass)
         html = pph.highlight_html('(1)')
         expected = '<span class="highlight">(<span class="int number">1</span>)</span>'
+        self.assertEqual(html, expected)
+
+    def test_html_escape(self):
+        pph = PPHighlighter(parser_factory_htmlescape)
+        html = pph.highlight_html('<1>')
+        expected = '<span class="highlight">&lt;<span class="int">1</span>&gt;</span>'
         self.assertEqual(html, expected)
 
     def test_pygments_class(self):

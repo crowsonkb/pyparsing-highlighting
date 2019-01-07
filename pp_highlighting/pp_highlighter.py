@@ -1,5 +1,6 @@
 """Syntax highlighting with pyparsing."""
 
+import html
 from warnings import warn
 
 from prompt_toolkit.formatted_text import (FormattedText, PygmentsTokens,
@@ -131,14 +132,17 @@ class PPHighlighter(Lexer):
         tags = ['<span class="highlight">']
         template = '<span class="{}">{}</span>'
         for style, text in fragments:
+            classes = []
             if self._pygments_styles:
-                classes = [self._pygments_css_class(style)]
+                classes.append(self._pygments_css_class(style))
             else:
-                classes = [st[6:] for st in style.split() if st.startswith('class:')]
+                for st in style.split():
+                    if st.startswith('class:'):
+                        classes.append(html.escape(st[6:]))
             if classes and classes[0]:
-                tags.append(template.format(' '.join(classes), text))
+                tags.append(template.format(' '.join(classes), html.escape(text)))
             else:
-                tags.append(text)
+                tags.append(html.escape(text))
         tags.append('</span>')
         return ''.join(tags)
 
