@@ -40,6 +40,18 @@ def parser_factory_multiclass(styler):
     return c
 
 
+def parser_factory_exception(styler):
+    def exception():
+        raise RuntimeError('test')
+    LPAR, RPAR = map(pp.Suppress, '()')
+    a = styler('class:int', ppc.integer)
+    a.addParseAction(exception)
+    b = styler('class:float', ppc.fnumber)
+    c = pp.Forward()
+    c <<= a ^ b | LPAR + pp.ZeroOrMore(c) + RPAR
+    return c
+
+
 class TestPPHighlighter(unittest.TestCase):
     def test_class(self):
         pph = PPHighlighter(parser_factory)
@@ -119,6 +131,11 @@ class TestPPHighlighter(unittest.TestCase):
                     ('class:int', '2'),
                     ('', '))')]
         self.assertEqual(fragments, expected)
+
+    def test_warning(self):
+        pph = PPHighlighter(parser_factory_exception)
+        with self.assertWarns(RuntimeWarning):
+            pph.highlight('(1)')
 
 
 if __name__ == '__main__':
