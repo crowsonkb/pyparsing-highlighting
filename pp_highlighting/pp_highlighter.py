@@ -116,6 +116,10 @@ class PPHighlighter(Lexer):
     def _highlight(self, s):
         """Gathers captured styled text and unstyled text into a
         :class:`FormattedText` instance."""
+        if not isinstance(s, str):
+            msg = 'Cannot highlight type {}, only str.'
+            raise TypeError(msg.format(type(s).__name__))
+
         default_style = Token.Text if self._pygments_styles else ''
 
         self._fragments = {}

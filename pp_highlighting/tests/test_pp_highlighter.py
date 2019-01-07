@@ -152,6 +152,11 @@ class TestPPHighlighter(unittest.TestCase):
         with self.assertWarns(RuntimeWarning):
             pph.highlight('(1)')
 
+    def test_nonstring_fail(self):
+        pph = PPHighlighter(parser_factory)
+        with self.assertRaises(TypeError):
+            pph.highlight(0)
+
 
 if __name__ == '__main__':
     unittest.main()
