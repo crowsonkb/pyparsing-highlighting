@@ -16,9 +16,11 @@ class PPHighlighter(Lexer):
     """Syntax highlighting for prompt_toolkit and HTML with pyparsing.
 
     This class can be used to highlight text via its :meth:`highlight` method
-    (for :func:`prompt_toolkit.print_formatted_text`), its
-    :meth:`highlight_html` method, and by passing it as the `lexer` argument to
-    a :class:`prompt_toolkit.PromptSession`.
+    (for :func:`prompt_toolkit.print_formatted_text`—see `the prompt_toolkit
+    documentation
+    <https://python-prompt-toolkit.readthedocs.io/en/stable/pages/printing_text.html#>`_
+    for details), its :meth:`highlight_html` method, and by passing it as the
+    `lexer` argument to a :class:`prompt_toolkit.PromptSession`.
     """
 
     def __init__(self, parser_factory, *, pygments_styles=False):
