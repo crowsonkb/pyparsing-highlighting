@@ -2,7 +2,8 @@
 
 from warnings import warn
 
-from prompt_toolkit.formatted_text import FormattedText, PygmentsTokens, split_lines
+from prompt_toolkit.formatted_text import (FormattedText, PygmentsTokens,
+                                           split_lines, to_formatted_text)
 from prompt_toolkit.lexers import Lexer
 from pygments.token import STANDARD_TYPES, Token
 import pyparsing as pp
@@ -100,12 +101,11 @@ class PPHighlighter(Lexer):
             s (str): The input string.
 
         Returns:
-            Union[FormattedText, PygmentsTokens]: The resulting list of
-            prompt-toolkit text fragments.
+            FormattedText: The resulting list of prompt-toolkit text fragments.
         """
         fragments = self._highlight(s)
         if self._pygments_styles:
-            return PygmentsTokens(fragments)
+            return to_formatted_text(PygmentsTokens(fragments))
         return fragments
 
     @classmethod

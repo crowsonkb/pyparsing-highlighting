@@ -5,7 +5,7 @@
 import unittest
 
 from prompt_toolkit.document import Document
-from prompt_toolkit.formatted_text import FormattedText, PygmentsTokens
+from prompt_toolkit.formatted_text import FormattedText
 from pygments.token import Token
 import pyparsing as pp
 from pyparsing import pyparsing_common as ppc
@@ -81,12 +81,15 @@ class TestPPHighlighter(unittest.TestCase):
     def test_pygments_class(self):
         pph = PPHighlighter(parser_factory_pygments, pygments_styles=True)
         fragments = pph.highlight('(1)')
-        self.assertTrue(isinstance(fragments, PygmentsTokens))
+        self.assertTrue(isinstance(fragments, FormattedText))
 
     def test_pygments_tokens(self):
         pph = PPHighlighter(parser_factory_pygments, pygments_styles=True)
         fragments = pph.highlight('(1)')
-        self.assertIn(fragments.token_list[1][0], Token.Number.Integer)
+        expected = [('class:pygments.text', '('),
+                    ('class:pygments.literal.number.integer', '1'),
+                    ('class:pygments.text', ')')]
+        self.assertEqual(fragments, expected)
 
     def test_html_pygments(self):
         pph = PPHighlighter(parser_factory_pygments, pygments_styles=True)
