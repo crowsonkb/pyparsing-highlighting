@@ -84,8 +84,11 @@ class PPHighlighter(Lexer):
 
     # pylint: disable=protected-access
     def _scan_string(self, s):
-        """Adapted from :meth:`pyparsing.ParserElement.scanString` for custom
-        exception handling."""
+        """Runs the parser over the input string, capturing styled text.
+
+        Adapted from :meth:`pyparsing.ParserElement.scanString` for custom
+        exception handling.
+        """
         if not self._parser.streamlined:
             self._parser.streamline()
         for e in self._parser.ignoreExprs:
@@ -106,6 +109,8 @@ class PPHighlighter(Lexer):
                 loc = nextloc if nextloc > loc else preloc + 1
 
     def _highlight(self, s):
+        """Gathers captured styled text and unstyled text into a
+        :class:`FormattedText` instance."""
         default_style = Token.Text if self._pygments_styles else ''
 
         self._fragments = {}
@@ -147,6 +152,7 @@ class PPHighlighter(Lexer):
 
     @classmethod
     def _pygments_css_class(cls, token):
+        """Returns the standard CSS class name for a Pygments token."""
         try:
             return STANDARD_TYPES[token]
         except KeyError:
