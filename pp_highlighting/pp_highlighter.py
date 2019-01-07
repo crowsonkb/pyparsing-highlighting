@@ -115,7 +115,7 @@ class PPHighlighter(Lexer):
                 loc = nextloc if nextloc > loc else preloc + 1
 
     def _highlight(self, s):
-        """Gathers captured styled text and unstyled text into a
+        """Gathers captured styled text and intervening unstyled text into a
         :class:`FormattedText` instance."""
         if not isinstance(s, str):
             msg = 'Cannot highlight type {}, only str.'
@@ -125,23 +125,21 @@ class PPHighlighter(Lexer):
 
         self._fragments = {}
         self._scan_string(s)
+        locs = sorted(self._fragments)
+        locs.append(len(s))
 
-        fragments = FormattedText()
         i = 0
-        unstyled_text = []
-        while i < len(s):
-            if i in self._fragments:
-                if unstyled_text:
-                    fragments.append((default_style, ''.join(unstyled_text)))
-                    unstyled_text = []
-                fragment = self._fragments[i]
+        pos = 0
+        fragments = FormattedText()
+        while pos < len(s):
+            fragment = self._fragments.get(pos)
+            if fragment:
                 fragments.append(fragment)
-                i += len(fragment[1])
-            else:
-                unstyled_text.append(s[i])
+                pos += len(fragment[1])
                 i += 1
-        if unstyled_text:
-            fragments.append((default_style, ''.join(unstyled_text)))
+            else:
+                fragments.append((default_style, s[pos:locs[i]]))
+                pos = locs[i]
 
         return fragments
 

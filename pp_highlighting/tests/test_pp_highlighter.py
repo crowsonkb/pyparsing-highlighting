@@ -1,6 +1,6 @@
 """Unit tests for pp_highlighter."""
 
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring, protected-access
 
 import unittest
 
@@ -29,6 +29,13 @@ def parser_factory_multiclass(styler):
     c = pp.Forward()
     c <<= a ^ b | LPAR + pp.ZeroOrMore(c) + RPAR
     return c
+
+
+def parser_factory_abc(styler):
+    a = styler('#f00', pp.Literal('a'))
+    b = styler('#00f', pp.Literal('b'))
+    c = pp.Literal('c')
+    return pp.StringStart() + pp.OneOrMore(a | b | c)
 
 
 def parser_factory_htmlescape(styler):
@@ -86,6 +93,26 @@ class TestPPHighlighter(unittest.TestCase):
         pph = PPHighlighter(parser_factory)
         fragments = pph.highlight('( \n 1)')
         self.assertEqual(fragments, [('', '( \n '), ('class:int', '1'), ('', ')')])
+
+    def test_complex(self):
+        pph = PPHighlighter(parser_factory)
+        s = '(1 (2 3.00 () 4) 5)'
+        pph._parser.parseString(s, parseAll=True)
+        fragments = pph.highlight(s)
+        expected = [('', '('), ('class:int', '1'), ('', ' ('),
+                    ('class:int', '2'), ('', ' '), ('class:float', '3.00'),
+                    ('', ' () '), ('class:int', '4'), ('', ') '),
+                    ('class:int', '5'), ('', ')')]
+        self.assertEqual(fragments, expected)
+
+    def test_adjacent_styled_fragments(self):
+        pph = PPHighlighter(parser_factory_abc)
+        s = 'aabca'
+        pph._parser.parseString(s, parseAll=True)
+        fragments = pph.highlight(s)
+        expected = [('#f00', 'a'), ('#f00', 'a'), ('#00f', 'b'), ('', 'c'),
+                    ('#f00', 'a')]
+        self.assertEqual(fragments, expected)
 
     def test_html(self):
         pph = PPHighlighter(parser_factory)
