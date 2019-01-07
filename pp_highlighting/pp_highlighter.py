@@ -1,5 +1,7 @@
 """Syntax highlighting with pyparsing."""
 
+from warnings import warn
+
 from prompt_toolkit.formatted_text import FormattedText, PygmentsTokens, split_lines
 from prompt_toolkit.lexers import Lexer
 from pygments.token import STANDARD_TYPES, Token
@@ -42,16 +44,34 @@ class PPHighlighter(Lexer):
         new_expr.setParseAction(action)
         return new_expr
 
+    # pylint: disable=protected-access
+    def _scan_string(self, s):
+        """Adapted from :meth:`pyparsing.ParserElement.scanString` for custom
+        exception handling."""
+        if not self._parser.streamlined:
+            self._parser.streamline()
+        for e in self._parser.ignoreExprs:
+            e.streamline()
+
+        loc = 0
+        pp.ParserElement.resetCache()
+        while loc <= len(s):
+            try:
+                preloc = self._parser.preParse(s, loc)
+                nextloc, _ = self._parser._parse(s, preloc, callPreParse=False)
+            except Exception as err:  # pylint: disable=broad-except
+                loc = preloc + 1
+                if not isinstance(err, pp.ParseBaseException):
+                    msg = 'Exception during parsing: {}: {}'
+                    warn(msg.format(type(err).__name__, err), RuntimeWarning)
+            else:
+                loc = nextloc if nextloc > loc else preloc + 1
+
     def _highlight(self, s):
         default_style = Token.Text if self._pygments_styles else ''
 
         self._fragments = {}
-        # TODO: restart on ParseBaseException
-        try:
-            for _ in self._parser.scanString(s):
-                pass
-        except pp.ParseBaseException:
-            pass
+        self._scan_string(s)
 
         fragments = FormattedText()
         i = 0
@@ -123,6 +143,5 @@ class PPHighlighter(Lexer):
         return ''.join(tags)
 
     def lex_document(self, document):
-        # TODO: handle exceptions that arise during highlighting
         lines = list(split_lines(self.highlight(document.text)))
         return lambda i: lines[i]
