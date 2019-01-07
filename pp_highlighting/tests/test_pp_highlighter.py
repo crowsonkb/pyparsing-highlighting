@@ -22,15 +22,6 @@ def parser_factory(styler):
     return c
 
 
-def parser_factory_pygments(styler):
-    LPAR, RPAR = map(pp.Suppress, '()')
-    a = styler(Token.Number.Integer, ppc.integer)
-    b = styler(Token.Number.Float, ppc.fnumber)
-    c = pp.Forward()
-    c <<= a ^ b | LPAR + pp.ZeroOrMore(c) + RPAR
-    return c
-
-
 def parser_factory_multiclass(styler):
     LPAR, RPAR = map(pp.Suppress, '()')
     a = styler('class:int class:number', ppc.integer)
@@ -46,6 +37,15 @@ def parser_factory_htmlescape(styler):
     b = styler('class:float', ppc.fnumber)
     c = pp.Forward()
     c <<= a ^ b | LANG + pp.ZeroOrMore(c) + RANG
+    return c
+
+
+def parser_factory_pygments(styler):
+    LPAR, RPAR = map(pp.Suppress, '()')
+    a = styler(Token.Number.Integer, ppc.integer)
+    b = styler(Token.Number.Float, ppc.fnumber)
+    c = pp.Forward()
+    c <<= a ^ b | LPAR + pp.ZeroOrMore(c) + RPAR
     return c
 
 
