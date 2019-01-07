@@ -9,7 +9,7 @@ BASE = Path(__file__).resolve().parent
 setup(
     name='pyparsing-highlighting',
     version='0.1.0',
-    description='Syntax highlighting with pyparsing.',
+    description='Syntax highlighting for prompt_toolkit and HTML with pyparsing.',
     long_description=(BASE / 'README.rst').read_text(),
     url='https://github.com/crowsonkb/pyparsing-highlighting',
     author='Katherine Crowson',

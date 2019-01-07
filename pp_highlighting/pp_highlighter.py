@@ -1,4 +1,4 @@
-"""Syntax highlighting with pyparsing."""
+"""Syntax highlighting for prompt_toolkit and HTML with pyparsing."""
 
 import html
 from warnings import warn
@@ -13,7 +13,7 @@ __all__ = ['PPHighlighter']
 
 
 class PPHighlighter(Lexer):
-    """Syntax highlighting with pyparsing.
+    """Syntax highlighting for prompt_toolkit and HTML with pyparsing.
 
     This class can be used to highlight text via its :meth:`highlight` method
     (for :func:`prompt_toolkit.print_formatted_text`), its

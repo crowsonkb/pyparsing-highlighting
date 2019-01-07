@@ -1,4 +1,4 @@
-"""Syntax highlighting with pyparsing."""
+"""Syntax highlighting for prompt_toolkit and HTML with pyparsing."""
 
 from .pp_highlighter import PPHighlighter
 
