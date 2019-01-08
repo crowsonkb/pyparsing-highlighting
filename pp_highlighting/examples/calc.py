@@ -1,4 +1,4 @@
-"""Four-function calculator example."""
+"""A four-function calculator example."""
 
 from functools import partial
 from operator import add, sub, mul, truediv
@@ -46,7 +46,7 @@ def lassoc_mapreduce(func):
 def parser_factory(styler=dummy_styler):
     """Builds the calculator parser.
 
-    If `styler_` is specified, parse expressions to be syntax highlighted will
+    If `styler` is specified, parse expressions to be syntax highlighted will
     be assigned classes.
     """
     LPAR, RPAR = map(pp.Suppress, '()')
