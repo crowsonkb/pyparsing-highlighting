@@ -24,8 +24,8 @@ class Locator(pp.ParserElement):
     def __str__(self):
         return str(self.expr)
 
-    # pylint: disable=protected-access
     def parseImpl(self, instring, loc, doActions=True):
+        # pylint: disable=protected-access
         end_loc, toks = self.expr._parse(instring, loc, doActions, False)
         toks['_loc'] = slice(loc, end_loc)
         return end_loc, toks
@@ -104,7 +104,6 @@ class PPHighlighter(Lexer):
             self._fragments[loc] = (style, s[toks.pop('_loc')])
         return Locator(expr).setParseAction(action)
 
-    # pylint: disable=protected-access
     def _scan_string(self, s):
         """Runs the parser over the input string, capturing styled text.
 
@@ -122,6 +121,7 @@ class PPHighlighter(Lexer):
         while loc <= len(s):
             try:
                 preloc = self._parser.preParse(s, loc)
+                # pylint: disable=protected-access
                 nextloc, _ = self._parser._parse(s, preloc, callPreParse=False)
             except Exception as err:  # pylint: disable=broad-except
                 if preloc is None:
