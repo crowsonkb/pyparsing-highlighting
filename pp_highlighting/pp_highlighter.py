@@ -139,17 +139,17 @@ class PPHighlighter(Lexer):
         locs.append(len(s))
 
         i = 0
-        pos = 0
+        loc = 0
         fragments = FormattedText()
-        while pos < len(s):
-            fragment = self._fragments.get(pos)
+        while loc < len(s):
+            fragment = self._fragments.get(loc)
             if fragment:
                 fragments.append(fragment)
-                pos += len(fragment[1])
+                loc += len(fragment[1])
                 i += 1
             else:
-                fragments.append((default_style, s[pos:locs[i]]))
-                pos = locs[i]
+                fragments.append((default_style, s[loc:locs[i]]))
+                loc = locs[i]
 
         return fragments
 
