@@ -18,7 +18,9 @@ class Locator(pp.ParserElement):
     def __init__(self, expr):
         super().__init__()
         self.expr = expr
-        self.name = 'Locator({!s})'.format(expr)
+
+    def __str__(self):
+        return str(self.expr)
 
     # pylint: disable=protected-access
     def parseImpl(self, instring, loc, doActions=True):
