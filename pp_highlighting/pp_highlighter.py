@@ -14,16 +14,16 @@ __all__ = ['PPHighlighter']
 
 
 class Locator(pp.ParserElement):
-    """Saves the match end location for a given expression."""
+    """Saves the match beginning and ending locations for a given expression."""
     def __init__(self, expr):
         super().__init__()
         self.expr = expr
-        self.name = 'Locator({!s})'.format(expr.name)
+        self.name = 'Locator({!s})'.format(expr)
 
     # pylint: disable=protected-access
     def parseImpl(self, instring, loc, doActions=True):
         end_loc, toks = self.expr._parse(instring, loc, doActions, False)
-        toks.append(end_loc)
+        toks['_loc'] = slice(loc, end_loc)
         return end_loc, toks
 
 
@@ -91,8 +91,7 @@ class PPHighlighter(Lexer):
             pyparsing.ParserElement: The wrapped parser.
         """
         def action(s, loc, toks):
-            self._fragments[loc] = (style, s[loc:toks.pop()])
-
+            self._fragments[loc] = (style, s[toks.pop('_loc')])
         return Locator(expr).setParseAction(action)
 
     # pylint: disable=protected-access
