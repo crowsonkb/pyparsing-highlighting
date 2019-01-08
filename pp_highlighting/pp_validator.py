@@ -26,6 +26,9 @@ class PPValidator(Validator):
         self._move_cursor_to_end = move_cursor_to_end
         self._multiline = multiline
 
+    def __repr__(self):
+        return '{0.__class__.__name__}({0._parser!r})'.format(self)
+
     def validate(self, document):
         try:
             self._parser.parseString(document.text, parseAll=True)
