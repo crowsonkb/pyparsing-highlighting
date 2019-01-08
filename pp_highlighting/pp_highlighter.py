@@ -13,6 +13,20 @@ import pyparsing as pp
 __all__ = ['PPHighlighter']
 
 
+class Locator(pp.ParserElement):
+    """Saves the match end location for a given expression."""
+    def __init__(self, expr):
+        super().__init__()
+        self.expr = expr
+        self.name = 'Locator({!s})'.format(expr.name)
+
+    # pylint: disable=protected-access
+    def parseImpl(self, instring, loc, doActions=True):
+        end_loc, toks = self.expr._parse(instring, loc, doActions, False)
+        toks.append(end_loc)
+        return end_loc, toks
+
+
 class PPHighlighter(Lexer):
     """Syntax highlighting for prompt_toolkit and HTML with pyparsing.
 
@@ -61,13 +75,12 @@ class PPHighlighter(Lexer):
     def styler(self, style, expr):
         """Wraps a pyparsing parse expression to capture text fragments.
 
-        :meth:`styler` wraps the given parse expression in
-        :func:`pyparsing.originalTextFor` to capture the original text it
-        matched, and returns the modified parse expression. You must add parse
-        actions to the modified parse expression with :meth:`addParseAction`
-        instead of :meth:`setParseAction`, or it will stop capturing text. The
-        `style` argument can be either a prompt_toolkit style string or a
-        Pygments token.
+        :meth:`styler` wraps the given parse expression, capturing the original
+        text it matched, and returns the modified parse expression. You must add
+        parse actions to the modified parse expression with
+        :meth:`addParseAction` instead of :meth:`setParseAction`, or it will
+        stop capturing text. The `style` argument can be either a prompt_toolkit
+        style string or a Pygments token.
 
         Args:
             style (Union[str, pygments.token.Token]): The style to set for this
@@ -78,12 +91,9 @@ class PPHighlighter(Lexer):
             pyparsing.ParserElement: The wrapped parser.
         """
         def action(s, loc, toks):
-            text = s[toks['_original_start']:toks['_original_end']]
-            self._fragments[loc] = (style, text)
-            return toks[1:-1]
-        new_expr = pp.originalTextFor(expr)
-        new_expr.setParseAction(action)
-        return new_expr
+            self._fragments[loc] = (style, s[loc:toks.pop()])
+
+        return Locator(expr).setParseAction(action)
 
     # pylint: disable=protected-access
     def _scan_string(self, s):
