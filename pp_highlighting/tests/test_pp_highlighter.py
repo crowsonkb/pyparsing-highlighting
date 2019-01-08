@@ -68,6 +68,15 @@ def parser_factory_exception(styler):
     return c
 
 
+def parser_factory_overlap(styler):
+    LPAR, RPAR = map(pp.Suppress, '()')
+    a = styler('class:int', ppc.integer)
+    b = styler('class:float', ppc.fnumber)
+    c = pp.Forward()
+    c <<= a ^ b | LPAR + pp.ZeroOrMore(c) + RPAR
+    return styler('bold', c)
+
+
 class TestPPHighlighter(unittest.TestCase):
     def test_class(self):
         pph = PPHighlighter(parser_factory)
@@ -183,6 +192,11 @@ class TestPPHighlighter(unittest.TestCase):
         pph = PPHighlighter(parser_factory)
         with self.assertRaises(TypeError):
             pph.highlight(0)
+
+    def test_overlap(self):
+        pph = PPHighlighter(parser_factory_overlap)
+        fragments = pph.highlight('(1 2) ')
+        self.assertEqual(fragments, [('bold', '(1 2)'), ('', ' ')])
 
 
 if __name__ == '__main__':

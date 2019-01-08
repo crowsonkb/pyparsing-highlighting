@@ -145,7 +145,8 @@ class PPHighlighter(Lexer):
             if fragment:
                 fragments.append(fragment)
                 loc += len(fragment[1])
-                i += 1
+                while locs[i] < loc:
+                    i += 1
             else:
                 fragments.append((default_style, s[loc:locs[i]]))
                 loc = locs[i]
