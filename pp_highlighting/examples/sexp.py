@@ -32,7 +32,6 @@ def parser_factory(styler=dummy_styler):
         return pp.Optional(expr) if styler else expr
 
     LPAR, RPAR, SQUO, DQUO = map(pp.Suppress, '()\'"')
-    control_chars = ''.join(map(chr, range(0, 32))) + '\x7f'
 
     form_first = pp.Forward()
     form = pp.Forward()
@@ -42,6 +41,11 @@ def parser_factory(styler=dummy_styler):
     string = DQUO + pp.CharsNotIn('"') + cond_optional(DQUO)
     string = styler('class:string', string).setName('string')
 
+    nil = pp.CaselessKeyword('nil').addParseAction(pp.replaceWith(False))
+    t = pp.CaselessKeyword('t').addParseAction(pp.replaceWith(True))
+    constant = styler('class:constant', nil | t)
+
+    control_chars = ''.join(map(chr, range(0, 32))) + '\x7f'
     symbol = pp.CharsNotIn(control_chars + '\'"`;,()[]{} ')
     symbol = styler('class:symbol', symbol).setName('symbol')
     symbol.addParseAction(lambda toks: Symbol(toks[0]))
@@ -54,8 +58,8 @@ def parser_factory(styler=dummy_styler):
     quote = (styler('class:quote', SQUO) + form).setName('quoted form')
     quote.addParseAction(lambda toks: Quote(toks[0]))
 
-    form_first <<= number ^ call | string | sexp | quote
-    form <<= number ^ symbol | string | sexp | quote
+    form_first <<= constant | number ^ call | string | sexp | quote
+    form <<= constant | number ^ symbol | string | sexp | quote
 
     return form
 
@@ -65,6 +69,7 @@ def main():
     parser = parser_factory()
     style = Style.from_dict({
         'call': '#4078f2',
+        'constant': '#b27a01 bold',
         'number': '#b27a01',
         'quote': '#0092c7',
         'string': '#528f50',
