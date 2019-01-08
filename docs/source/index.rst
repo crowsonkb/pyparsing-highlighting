@@ -20,7 +20,11 @@ Requirements
 Installation
 ------------
 
-After cloning the repository:
+.. code:: bash
+
+   pip3 install -U pyparsing-highlighting
+
+Or, after cloning the repository on GitHub:
 
 .. code:: bash
 
@@ -48,7 +52,7 @@ The following code demonstrates the use of :class:`PPHighlighter`:
 
    FormattedText([('class:int', '1'), ('', ', '), ('class:int', '2'), ('', ', '), ('class:int', '3')])
 
-A :class:`FormattedText` instance can be passed to :code:`prompt_toolkit.print_formatted_text()`, along with a :class:`Style` mapping the class names to colors, for display on the terminal. :class:`PPHighlighter` also has a :meth:`highlight_html` method which returns the generated HTML as a string.
+A :class:`FormattedText` instance can be passed to :func:`prompt_toolkit.print_formatted_text`, along with a :class:`Style` mapping the class names to colors, for display on the terminal. For convenience, :class:`PPHighlighter` defines a :meth:`print` method that highlights and then prints a string. :class:`PPHighlighter` also has a :meth:`highlight_html` method which returns generated HTML as a string.
 
 :class:`PPHighlighter` can also be passed to a :class:`prompt_toolkit.PromptSession` as the `lexer` argument, which will perform syntax highlighting as you type. For an example of this, see ``pp_highlighting/examples/calc.py`` and ``pp_highlighting/examples/repl.py``.
 
@@ -60,7 +64,6 @@ Module pp_highlighting
    :special-members: __init__
 
    .. autofunction:: pp_highlighting.dummy_styler
-
 
 Indices and tables
 ==================

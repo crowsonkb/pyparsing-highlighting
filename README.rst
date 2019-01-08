@@ -3,7 +3,7 @@ pyparsing-highlighting
 
 Syntax highlighting with `pyparsing <https://github.com/pyparsing/pyparsing>`_, supporting both HTML output and `prompt_toolkit <https://github.com/prompt-toolkit/python-prompt-toolkit>`_–style terminal output. The ``PPHighlighter`` class can also be used as a lexer for syntax highlighting as you type in ``prompt_toolkit``. It is compatible with existing `Pygments <http://pygments.org>`_ styles.
 
-Read the documentation on `readthedocs <https://pyparsing-highlighting.readthedocs.io/en/latest/>`_.
+Read the documentation on `readthedocs <https://pyparsing-highlighting.readthedocs.io/en/stable/>`_.
 
 Requirements
 ------------
@@ -16,7 +16,11 @@ Requirements
 Installation
 ------------
 
-After cloning the repository:
+.. code:: bash
+
+   pip3 install -U pyparsing-highlighting
+
+Or, after cloning the repository on GitHub:
 
 .. code:: bash
 
@@ -44,6 +48,6 @@ The following code demonstrates the use of ``PPHighlighter``:
 
    FormattedText([('class:int', '1'), ('', ', '), ('class:int', '2'), ('', ', '), ('class:int', '3')])
 
-A ``FormattedText`` instance can be passed to ``prompt_toolkit.print_formatted_text()``, along with a ``Style`` mapping the class names to colors, for display on the terminal. ``PPHighlighter`` also has a ``highlight_html()`` method which returns the generated HTML as a string.
+A ``FormattedText`` instance can be passed to ``prompt_toolkit.print_formatted_text()``, along with a ``Style`` mapping the class names to colors, for display on the terminal. For convenience, ``PPHighlighter`` defines a ``print()`` method that highlights and then prints a string. ``PPHighlighter`` also has a ``highlight_html()`` method which returns the generated HTML as a string.
 
 ``PPHighlighter`` can also be passed to a ``prompt_toolkit.PromptSession`` as the ``lexer`` argument, which will perform syntax highlighting as you type. For an example of this, see ``pp_highlighting/examples/calc.py`` and ``pp_highlighting/examples/repl.py``.
