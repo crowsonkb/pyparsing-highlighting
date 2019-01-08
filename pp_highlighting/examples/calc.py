@@ -43,7 +43,7 @@ def lassoc_mapreduce(func):
     return reducer
 
 
-def parser_factory(styler):
+def parser_factory(styler=dummy_styler):
     """Builds the calculator parser.
 
     If `styler_` is specified, parse expressions to be syntax highlighted will
@@ -70,7 +70,7 @@ def parser_factory(styler):
 
 def main():
     """The main function."""
-    parser = parser_factory(dummy_styler)
+    parser = parser_factory()
     style = Style([('op', '#b625b4 bold'), ('value', '#b27a01')])
     repl(parser, parser_factory, style=style)
 
