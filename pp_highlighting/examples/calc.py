@@ -1,11 +1,13 @@
 """Four-function calculator example."""
 
+from functools import partial
 from operator import add, sub, mul, truediv
 
 from prompt_toolkit.styles import Style
 import pyparsing as pp
 from pyparsing import pyparsing_common as ppc
 
+from pp_highlighting import dummy_styler
 from .repl import repl
 
 
@@ -41,43 +43,34 @@ def lassoc_mapreduce(func):
     return reducer
 
 
-def parser_factory(styler_=None):
+def parser_factory(styler):
     """Builds the calculator parser.
 
     If `styler_` is specified, parse expressions to be syntax highlighted will
     be assigned classes.
     """
-    styler = styler_ if styler_ else lambda *args: args[1]
-
     LPAR, RPAR = map(pp.Suppress, '()')
-    plus, minus, star, slash = map(lambda s: styler('class:op', pp.Literal(s)), '+-*/')
-
+    plus, minus, star, slash = map(partial(styler, 'class:op'), '+-*/')
     value = styler('class:value', ppc.fnumber)
 
     expr = pp.Forward()
-
     atom = value | LPAR + expr + RPAR
-
     neg = minus + atom
-    if not styler_:
-        neg.addParseAction(lambda t: -t[1])
     signed_atom = atom | neg
-
     term = signed_atom + pp.ZeroOrMore((star | slash) + signed_atom)
-    if not styler_:
-        term.addParseAction(lassoc_mapreduce(lambda op: {'*': mul, '/': truediv}[op]))
-
     expr <<= term + pp.ZeroOrMore((plus | minus) + term)
-    if not styler_:
+
+    if not styler:
+        neg.addParseAction(lambda t: -t[1])
+        term.addParseAction(lassoc_mapreduce(lambda op: {'*': mul, '/': truediv}[op]))
         expr.addParseAction(lassoc_mapreduce(lambda op: {'+': add, '-': sub}[op]))
-    expr.setName('expr')
 
     return expr
 
 
 def main():
     """The main function."""
-    parser = parser_factory()
+    parser = parser_factory(dummy_styler)
     style = Style([('op', '#b625b4 bold'), ('value', '#b27a01')])
     repl(parser, parser_factory, style=style)
 

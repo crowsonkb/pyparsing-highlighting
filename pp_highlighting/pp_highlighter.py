@@ -10,7 +10,7 @@ from prompt_toolkit.lexers import Lexer
 from pygments.token import STANDARD_TYPES, Token
 import pyparsing as pp
 
-__all__ = ['PPHighlighter']
+__all__ = ['dummy_styler', 'PPHighlighter']
 
 
 class Locator(pp.ParserElement):
@@ -29,6 +29,37 @@ class Locator(pp.ParserElement):
         end_loc, toks = self.expr._parse(instring, loc, doActions, False)
         toks['_loc'] = slice(loc, end_loc)
         return end_loc, toks
+
+
+class DummyStyler:
+    """A drop-in replacement for :meth:`PPHighlighter.styler` which merely
+    returns a copy of the given parse expression without capturing text or
+    applying styles. To simplify testing if a parser factory has been passed
+    :func:`dummy_styler`, :code:`bool(dummy_styler)` is `False`.
+
+    Args:
+        style (Union[str, pygments.token.Token]): Ignored.
+        expr (Union[str, pyparsing.ParserElement]): Copied, unless it is a
+            string literal, in which case it will be wrapped by
+            :attr:`pyparsing.ParserElement._literalStringClass` (default
+            :class:`pyparsing.Literal`).
+
+    Returns:
+        pyparsing.ParserElement: A copy of the input parser element.
+    """
+    def __bool__(self):
+        return False
+
+    def __call__(self, style, expr):
+        if isinstance(expr, str):
+            # pylint: disable=protected-access
+            return pp.ParserElement._literalStringClass(expr)
+        return expr.copy()
+
+    def __repr__(self):
+        return '<{.__module__}.dummy_styler(style, expr)>'.format(self)
+
+dummy_styler = DummyStyler()
 
 
 class PPHighlighter(Lexer):
@@ -93,9 +124,9 @@ class PPHighlighter(Lexer):
             style (Union[str, pygments.token.Token]): The style to set for this
                 text fragment, as a string or a Pygments token.
             expr (Union[str, pyparsing.ParserElement]): The pyparsing parser to
-                wrap. If a literal string is specified, the current value of
+                wrap. If a literal string is specified, it will be wrapped by
                 :attr:`pyparsing.ParserElement._literalStringClass` (default
-                :class:`pyparsing.Literal`) will be called on it.
+                :class:`pyparsing.Literal`).
 
         Returns:
             pyparsing.ParserElement: The wrapped parser.

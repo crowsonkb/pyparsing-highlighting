@@ -59,6 +59,9 @@ Module pp_highlighting
    :members:
    :special-members: __init__
 
+   .. autofunction:: pp_highlighting.dummy_styler
+
+
 Indices and tables
 ==================
 
