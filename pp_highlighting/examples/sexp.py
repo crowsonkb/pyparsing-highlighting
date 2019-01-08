@@ -41,7 +41,7 @@ def parser_factory(styler=dummy_styler):
     string = DQUO + pp.CharsNotIn('"') + cond_optional(DQUO)
     string = styler('class:string', string).setName('string')
 
-    nil = pp.CaselessKeyword('nil').addParseAction(pp.replaceWith(False))
+    nil = pp.CaselessKeyword('nil').addParseAction(pp.replaceWith(None))
     t = pp.CaselessKeyword('t').addParseAction(pp.replaceWith(True))
     constant = styler('class:constant', nil | t)
 
