@@ -17,6 +17,8 @@ class Locator(pp.ParserElement):
     """Saves the match beginning and ending locations for a given expression."""
     def __init__(self, expr):
         super().__init__()
+        if isinstance(expr, str):
+            expr = self._literalStringClass(expr)
         self.expr = expr
 
     def __str__(self):
@@ -87,7 +89,10 @@ class PPHighlighter(Lexer):
         Args:
             style (Union[str, pygments.token.Token]): The style to set for this
                 text fragment, as a string or a Pygments token.
-            expr (pyparsing.ParserElement): The pyparsing parser to wrap.
+            expr (Union[str, pyparsing.ParserElement]): The pyparsing parser to
+                wrap. If a literal string is specified, the current value of
+                :attr:`pyparsing.ParserElement._literalStringClass` (default
+                :class:`pyparsing.Literal`) will be called on it.
 
         Returns:
             pyparsing.ParserElement: The wrapped parser.
