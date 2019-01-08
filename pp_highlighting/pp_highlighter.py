@@ -1,7 +1,7 @@
 """Syntax highlighting for prompt_toolkit and HTML with pyparsing."""
 
 import html
-from warnings import warn
+import warnings
 
 from prompt_toolkit import print_formatted_text
 from prompt_toolkit.formatted_text import (FormattedText, PygmentsTokens,
@@ -159,8 +159,8 @@ class PPHighlighter(Lexer):
                     raise
                 loc = preloc + 1
                 if not isinstance(err, pp.ParseBaseException):
-                    msg = 'Exception during parsing: {}: {}'
-                    warn(msg.format(type(err).__name__, err), RuntimeWarning)
+                    msg = 'Exception during parsing: {0.__class__.__name__}: {0}'
+                    warnings.warn(msg.format(err), RuntimeWarning)
             else:
                 loc = nextloc if nextloc > loc else preloc + 1
 
