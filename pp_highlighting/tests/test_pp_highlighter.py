@@ -32,10 +32,9 @@ def parser_factory_multiclass(styler):
 
 
 def parser_factory_abc(styler):
-    a = styler('#f00', pp.Literal('a'))
-    b = styler('#00f', pp.Literal('b'))
-    c = pp.Literal('c')
-    return pp.StringStart() + pp.OneOrMore(a | b | c)
+    a = styler('#f00', 'a')
+    b = styler('#00f', 'b')
+    return pp.StringStart() + pp.OneOrMore(a | b | 'c')
 
 
 def parser_factory_htmlescape(styler):
