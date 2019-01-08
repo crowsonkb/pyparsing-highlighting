@@ -36,20 +36,20 @@ def parser_factory(styler=dummy_styler):
     form_first = pp.Forward()
     form = pp.Forward()
 
-    number = styler('class:number', ppc.number).setName('number')
-
-    string = DQUO + pp.CharsNotIn('"') + cond_optional(DQUO)
-    string = styler('class:string', string).setName('string')
-
-    nil = pp.CaselessKeyword('nil').addParseAction(pp.replaceWith(None))
+    nil = pp.CaselessKeyword('nil').addParseAction(pp.replaceWith([]))
     t = pp.CaselessKeyword('t').addParseAction(pp.replaceWith(True))
     constant = styler('class:constant', nil | t)
+
+    number = styler('class:number', ppc.number).setName('number')
 
     control_chars = ''.join(map(chr, range(0, 32))) + '\x7f'
     symbol = pp.CharsNotIn(control_chars + '\'"`;,()[]{} ')
     symbol = styler('class:symbol', symbol).setName('symbol')
     symbol.addParseAction(lambda toks: Symbol(toks[0]))
     call = styler('class:call', symbol)
+
+    string = DQUO + pp.Combine(pp.Optional(pp.CharsNotIn('"'))) + cond_optional(DQUO)
+    string = styler('class:string', string).setName('string')
 
     forms = (form_first + pp.ZeroOrMore(form)).setName('one or more forms')
     sexp = (LPAR + pp.Optional(forms) + cond_optional(RPAR)).setName('s-expression')
