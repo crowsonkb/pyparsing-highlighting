@@ -13,10 +13,13 @@ import pyparsing as pp
 __all__ = ['dummy_styler', 'PPHighlighter']
 
 
-class Locator(pp.ParserElement):
-    """Saves the match beginning and ending locations for a given expression."""
-    def __init__(self, expr):
+class Styler(pp.ParserElement):
+    """Saves the original, untokenized text matched by a parse expression as a
+    prompt_toolkit text fragment."""
+    def __init__(self, fragments, style, expr):
         super().__init__()
+        self._fragments = fragments
+        self.style = style
         if isinstance(expr, str):
             expr = self._literalStringClass(expr)
         self.expr = expr
@@ -27,7 +30,7 @@ class Locator(pp.ParserElement):
     def parseImpl(self, instring, loc, doActions=True):
         # pylint: disable=protected-access
         end_loc, toks = self.expr._parse(instring, loc, doActions, False)
-        toks['_loc'] = slice(loc, end_loc)
+        self._fragments[loc] = (self.style, instring[loc:end_loc])
         return end_loc, toks
 
 
@@ -114,11 +117,9 @@ class PPHighlighter(Lexer):
         """Wraps a pyparsing parse expression to capture text fragments.
 
         :meth:`styler` wraps the given parse expression, capturing the original
-        text it matched, and returns the modified parse expression. You must add
-        parse actions to the modified parse expression with
-        :meth:`addParseAction` instead of :meth:`setParseAction`, or it will
-        stop capturing text. The `style` argument can be either a prompt_toolkit
-        style string or a Pygments token.
+        text it matched, and returns the modified parse expression. The `style`
+        argument can be either a prompt_toolkit style string or a Pygments
+        token.
 
         Args:
             style (Union[str, pygments.token.Token]): The style to set for this
@@ -131,9 +132,7 @@ class PPHighlighter(Lexer):
         Returns:
             pyparsing.ParserElement: The wrapped parser.
         """
-        def action(s, loc, toks):
-            self._fragments[loc] = (style, s[toks.pop('_loc')])
-        return Locator(expr).setParseAction(action)
+        return Styler(self._fragments, style, expr)
 
     def _scan_string(self, s):
         """Runs the parser over the input string, capturing styled text.
@@ -173,7 +172,7 @@ class PPHighlighter(Lexer):
 
         default_style = Token.Text if self._pygments_styles else ''
 
-        self._fragments = {}
+        self._fragments.clear()
         self._scan_string(s)
         locs = sorted(self._fragments)
         locs.append(len(s))

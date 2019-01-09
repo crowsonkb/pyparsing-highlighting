@@ -76,6 +76,24 @@ def parser_factory_overlap(styler):
     return styler('bold', c)
 
 
+def parser_factory_add_parse_action(styler):
+    LPAR, RPAR = map(pp.Suppress, '()')
+    a = styler('class:int', ppc.integer).addParseAction(lambda toks: -toks[0])
+    b = styler('class:float', ppc.fnumber)
+    c = pp.Forward()
+    c <<= a ^ b | LPAR + pp.ZeroOrMore(c) + RPAR
+    return c
+
+
+def parser_factory_set_parse_action(styler):
+    LPAR, RPAR = map(pp.Suppress, '()')
+    a = styler('class:int', ppc.integer).setParseAction(lambda toks: -toks[0])
+    b = styler('class:float', ppc.fnumber)
+    c = pp.Forward()
+    c <<= a ^ b | LPAR + pp.ZeroOrMore(c) + RPAR
+    return c
+
+
 class TestPPHighlighter(unittest.TestCase):
     def test_class(self):
         pph = PPHighlighter(parser_factory)
@@ -196,6 +214,20 @@ class TestPPHighlighter(unittest.TestCase):
         pph = PPHighlighter(parser_factory_overlap)
         fragments = pph.highlight('(1 2) ')
         self.assertEqual(fragments, [('bold', '(1 2)'), ('', ' ')])
+
+    def test_add_parse_action(self):
+        pph = PPHighlighter(parser_factory_add_parse_action)
+        fragments = pph.highlight('(1)')
+        self.assertEqual(fragments, [('', '('), ('class:int', '1'), ('', ')')])
+        result = pph._parser.parseString('(1)', parseAll=True)
+        self.assertEqual(result[0], -1)
+
+    def test_set_parse_action(self):
+        pph = PPHighlighter(parser_factory_set_parse_action)
+        fragments = pph.highlight('(1)')
+        self.assertEqual(fragments, [('', '('), ('class:int', '1'), ('', ')')])
+        result = pph._parser.parseString('(1)', parseAll=True)
+        self.assertEqual(result[0], -1)
 
 
 if __name__ == '__main__':
