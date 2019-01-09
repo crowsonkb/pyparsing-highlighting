@@ -50,15 +50,15 @@ def parser_factory(styler=dummy_styler):
     be assigned classes.
     """
     LPAR, RPAR = map(pp.Suppress, '()')
-    plus, minus, star, slash = map(partial(styler, 'class:op'), '+-*/')
+    PLUS, MINUS, STAR, SLASH = map(partial(styler, 'class:operator'), '+-*/')
     value = styler('class:value', ppc.fnumber)
 
     expr = pp.Forward()
     atom = value | LPAR + expr + RPAR
-    neg = minus + atom
+    neg = MINUS + atom
     signed_atom = atom | neg
-    term = signed_atom + pp.ZeroOrMore((star | slash) + signed_atom)
-    expr <<= term + pp.ZeroOrMore((plus | minus) + term)
+    term = signed_atom + pp.ZeroOrMore((STAR | SLASH) + signed_atom)
+    expr <<= term + pp.ZeroOrMore((PLUS | MINUS) + term)
 
     if not styler:
         neg.addParseAction(lambda t: -t[1])
@@ -71,7 +71,7 @@ def parser_factory(styler=dummy_styler):
 def main():
     """The main function."""
     parser = parser_factory()
-    style = Style([('op', '#b625b4 bold'), ('value', '#b27a01')])
+    style = Style([('operator', '#b625b4 bold'), ('value', '#b27a01')])
     repl(parser, parser_factory, style=style)
 
 
