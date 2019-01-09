@@ -234,7 +234,8 @@ class PPHighlighter(Lexer):
         """Highlights a string, returning HTML.
 
         Only CSS class names are currently supported. Parts of the style string
-        that do not begin with ``class:`` will be ignored.
+        that do not begin with ``class:`` will be ignored. If there are dots
+        in the class name, they will be turned into hyphens.
 
         Args:
             s (str): The input string.
@@ -245,6 +246,7 @@ class PPHighlighter(Lexer):
         fragments = self._highlight(s)
         tags = ['<span class="highlight">']
         template = '<span class="{}">{}</span>'
+        table = str.maketrans({'.': '-'})
         for style, text in fragments:
             classes = []
             if self._pygments_styles:
@@ -252,7 +254,7 @@ class PPHighlighter(Lexer):
             else:
                 for st in style.split():
                     if st.startswith('class:'):
-                        classes.append(html.escape(st[6:]))
+                        classes.append(html.escape(st[6:].translate(table)))
             if classes and classes[0]:
                 tags.append(template.format(' '.join(classes), html.escape(text)))
             else:

@@ -46,6 +46,15 @@ def parser_factory_htmlescape(styler):
     return c
 
 
+def parser_factory_dotted_classes(styler):
+    LPAR, RPAR = map(pp.Suppress, '()')
+    a = styler('class:number.int', ppc.integer)
+    b = styler('class:number.float', ppc.fnumber)
+    c = pp.Forward()
+    c <<= a ^ b | LPAR + pp.ZeroOrMore(c) + RPAR
+    return c
+
+
 def parser_factory_pygments(styler):
     LPAR, RPAR = map(pp.Suppress, '()')
     a = styler(Token.Number.Integer, ppc.integer)
@@ -156,6 +165,12 @@ class TestPPHighlighter(unittest.TestCase):
         pph = PPHighlighter(parser_factory_htmlescape)
         html = pph.highlight_html('<1>')
         expected = '<span class="highlight">&lt;<span class="int">1</span>&gt;</span>'
+        self.assertEqual(html, expected)
+
+    def test_html_dotted_classes(self):
+        pph = PPHighlighter(parser_factory_dotted_classes)
+        html = pph.highlight_html('(1)')
+        expected = '<span class="highlight">(<span class="number-int">1</span>)</span>'
         self.assertEqual(html, expected)
 
     def test_pygments_class(self):
