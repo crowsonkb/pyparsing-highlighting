@@ -1,6 +1,6 @@
 """Unit tests for pp_highlighter."""
 
-# pylint: disable=missing-docstring, protected-access
+# pylint: disable=missing-docstring, protected-access, too-many-public-methods
 
 import unittest
 
