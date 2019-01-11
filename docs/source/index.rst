@@ -38,6 +38,7 @@ The following code demonstrates the use of :class:`PPHighlighter`:
 .. code:: python
 
    from pp_highlighting import PPHighlighter
+   from prompt_toolkit.styles import Style
    import pyparsing as pp
    from pyparsing import pyparsing_common as ppc
 
@@ -46,13 +47,31 @@ The following code demonstrates the use of :class:`PPHighlighter`:
        return pp.delimitedList(a)
 
    pph = PPHighlighter(parser_factory)
-   pph.highlight('1, 2, 3')
+   style = Style([('int', '#528f50')])
+   pph.print('1, 2, 3', style=style)
 
-:code:`pph.highlight('1, 2, 3')` returns the following::
+This prints out the following to the terminal:
+
+.. image:: example_ints.png
+   :scale: 50%
+
+The following code generates HTML:
+
+.. code:: python
+
+   pph.highlight_html('1, 2, 3')
+
+The output is:
+
+.. code:: HTML
+
+   <span class="highlight"><span class="int">1</span>, <span class="int">2</span>, <span class="int">3</span></span>
+
+There is also a lower-level API: :code:`pph.highlight('1, 2, 3')` returns the following::
 
    FormattedText([('class:int', '1'), ('', ', '), ('class:int', '2'), ('', ', '), ('class:int', '3')])
 
-A :class:`FormattedText` instance can be passed to :func:`prompt_toolkit.print_formatted_text`, along with a :class:`Style` mapping the class names to colors, for display on the terminal. For convenience, :class:`PPHighlighter` defines a :meth:`print` method that highlights and then prints a string. :class:`PPHighlighter` also has a :meth:`highlight_html` method which returns generated HTML as a string.
+A :class:`FormattedText` instance can be passed to :func:`prompt_toolkit.print_formatted_text`, along with a :class:`Style` mapping the class names to colors, for display on the terminal.
 
 :class:`PPHighlighter` can also be passed to a :class:`prompt_toolkit.PromptSession` as the `lexer` argument, which will perform syntax highlighting as you type. For an example of this, see ``pp_highlighting/examples/calc.py`` and ``pp_highlighting/examples/repl.py``.
 
