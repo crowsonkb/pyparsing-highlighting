@@ -37,8 +37,8 @@ class Styler(pp.ParserElement):
 class DummyStyler:
     """A drop-in replacement for :meth:`PPHighlighter.styler` which merely
     returns a copy of the given parse expression without capturing text or
-    applying styles. To simplify testing if a parser factory has been passed
-    :func:`dummy_styler`, :code:`bool(dummy_styler)` is `False`.
+    applying styles. To simplify testing whether a parser factory has been
+    passed :func:`dummy_styler`, :code:`bool(dummy_styler)` is `False`.
 
     Args:
         style (Union[str, pygments.token.Token]): Ignored.
