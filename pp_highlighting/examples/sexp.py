@@ -45,7 +45,7 @@ def parser_factory(styler=dummy_styler):
     control_chars = ''.join(map(chr, range(0, 32))) + '\x7f'
     symbol = pp.CharsNotIn(control_chars + '\'"`;,()[]{} ')
     symbol = styler('class:symbol', symbol).setName('symbol')
-    symbol.addParseAction(lambda toks: Symbol(toks[0]))
+    symbol.addParseAction(lambda t: Symbol(t[0]))
     call = styler('class:call', symbol)
 
     string = DQUO + pp.Combine(pp.Optional(pp.CharsNotIn('"'))) + cond_optional(DQUO)
@@ -53,10 +53,10 @@ def parser_factory(styler=dummy_styler):
 
     forms = (form_first + pp.ZeroOrMore(form)).setName('one or more forms')
     sexp = (LPAR + pp.Optional(forms) + cond_optional(RPAR)).setName('s-expression')
-    sexp.addParseAction(lambda toks: [list(toks)])
+    sexp.addParseAction(lambda t: [list(t)])
 
     quote = (styler('class:quote', SQUO) + form).setName('quoted form')
-    quote.addParseAction(lambda toks: Quote(toks[0]))
+    quote.addParseAction(lambda t: Quote(t[0]))
 
     form_first <<= constant | number ^ call | string | sexp | quote
     form <<= constant | number ^ symbol | string | sexp | quote

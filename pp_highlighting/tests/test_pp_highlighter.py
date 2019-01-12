@@ -87,7 +87,7 @@ def parser_factory_overlap(styler):
 
 def parser_factory_add_parse_action(styler):
     LPAR, RPAR = map(pp.Suppress, '()')
-    a = styler('class:int', ppc.integer).addParseAction(lambda toks: -toks[0])
+    a = styler('class:int', ppc.integer).addParseAction(lambda t: -t[0])
     b = styler('class:float', ppc.fnumber)
     c = pp.Forward()
     c <<= a ^ b | LPAR + pp.ZeroOrMore(c) + RPAR
@@ -96,7 +96,7 @@ def parser_factory_add_parse_action(styler):
 
 def parser_factory_set_parse_action(styler):
     LPAR, RPAR = map(pp.Suppress, '()')
-    a = styler('class:int', ppc.integer).setParseAction(lambda toks: -toks[0])
+    a = styler('class:int', ppc.integer).setParseAction(lambda t: -t[0])
     b = styler('class:float', ppc.fnumber)
     c = pp.Forward()
     c <<= a ^ b | LPAR + pp.ZeroOrMore(c) + RPAR
