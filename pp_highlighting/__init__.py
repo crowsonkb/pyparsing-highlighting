@@ -5,4 +5,4 @@ from .pp_validator import PPValidator
 
 __all__ = ['dummy_styler', 'PPHighlighter', 'PPValidator']
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
