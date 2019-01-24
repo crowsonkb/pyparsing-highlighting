@@ -1,3 +1,4 @@
+include docs/source/example_ints.png
 include LICENSE
 include README.rst
 include requirements.txt
