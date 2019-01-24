@@ -48,9 +48,10 @@ The following code demonstrates the use of ``PPHighlighter``:
 
 This prints out the following to the terminal:
 
-.. raw:: html
-
-   <img src="docs/source/example_ints.png" width="56px" height="18px">
+.. image:: docs/source/example_ints.png
+   :width: 56
+   :height: 18
+   :alt: 1, 2, 3
 
 The following code generates HTML:
 
