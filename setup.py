@@ -2,24 +2,22 @@
 
 from pathlib import Path
 
-from setuptools import find_packages, setup
-
-from pp_highlighting import __version__
+from setuptools import setup
 
 BASE = Path(__file__).resolve().parent
 
 setup(
     name='pyparsing-highlighting',
-    version=__version__,
+    version='0.1.3',
     description='Syntax highlighting for prompt_toolkit and HTML with pyparsing.',
     long_description=(BASE / 'README.rst').read_text(),
     url='https://github.com/crowsonkb/pyparsing-highlighting',
     author='Katherine Crowson',
     author_email='crowsonkb@gmail.com',
     license='MIT',
-    packages=find_packages(),
-    data_files=[('', ['LICENSE', 'README.rst', 'requirements.txt'])],
+    packages=['pp_highlighting'],
     include_package_data=True,
+    zip_safe=False,
     install_requires=(BASE / 'requirements.txt').read_text().strip().split('\n'),
     python_requires='>=3.5',
     classifiers=[
