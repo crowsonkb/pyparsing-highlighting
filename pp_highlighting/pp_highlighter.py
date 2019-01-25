@@ -270,7 +270,8 @@ class PPHighlighter(Lexer):
                     if st.startswith('class:'):
                         classes.append(html.escape(st[6:].translate(table)))
             if classes and classes[0]:
-                tags.append(template.format(' '.join(classes), html.escape(text)))
+                tags.append(template.format(' '.join(classes),
+                                            html.escape(text)))
             else:
                 tags.append(html.escape(text))
         tags.append('</span>')
