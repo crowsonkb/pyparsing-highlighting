@@ -7,3 +7,4 @@ __pycache__
 /docs/build
 .ipynb_checkpoints
 *.ipynb
+/.mypy_cache
