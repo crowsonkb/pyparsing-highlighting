@@ -48,9 +48,9 @@ The following code demonstrates the use of ``PPHighlighter``:
 
 This prints out the following to the terminal:
 
-.. image:: docs/source/example_ints.png
-   :width: 56
-   :height: 18
+.. image:: https://raw.githubusercontent.com/crowsonkb/pyparsing-highlighting/master/docs/source/example_ints.png
+   :width: 56px
+   :height: 18px
    :alt: 1, 2, 3
 
 The following code generates HTML:
