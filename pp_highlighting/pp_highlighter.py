@@ -224,7 +224,8 @@ class PPHighlighter(Lexer):
             s (str): The input string.
 
         Returns:
-            FormattedText: The resulting list of prompt_toolkit text fragments.
+            prompt_toolkit.formatted_text.FormattedText: The resulting list of
+            prompt_toolkit text fragments.
         """
         fragments = self._highlight(s)
         if self.uses_pygments_tokens:
