@@ -1,8 +1,11 @@
 """Syntax highlighting for prompt_toolkit and HTML with pyparsing."""
 
-from .pp_highlighter import dummy_styler, PPHighlighter
+from .pp_highlighter import DummyStyler, PPHighlighter, Styler
 from .pp_validator import PPValidator
 
-__all__ = ['dummy_styler', 'PPHighlighter', 'PPValidator']
+dummy_styler = DummyStyler()
 
-__version__ = '0.1.7'
+__all__ = ['dummy_styler', 'DummyStyler', 'PPHighlighter', 'PPValidator',
+           'Styler']
+
+__version__ = '0.2.0'

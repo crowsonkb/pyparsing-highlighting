@@ -67,7 +67,7 @@ The output is:
 
    <span class="highlight"><span class="int">1</span>, <span class="int">2</span>, <span class="int">3</span></span>
 
-There is also a lower-level API: :code:`pph.highlight('1, 2, 3')` returns the following::
+There is also a lower-level API—:code:`pph.highlight('1, 2, 3')` returns the following::
 
    FormattedText([('class:int', '1'), ('', ', '), ('class:int', '2'), ('', ', '), ('class:int', '3')])
 
@@ -80,9 +80,8 @@ Module pp_highlighting
 
 .. automodule:: pp_highlighting
    :members:
-   :special-members: __init__
-
-   .. autofunction:: pp_highlighting.dummy_styler
+   :show-inheritance:
+   :special-members: __init__, __call__
 
 Indices and tables
 ==================

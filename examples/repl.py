@@ -7,21 +7,21 @@ from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.patch_stdout import patch_stdout
 from pyparsing import ParseBaseException
 
-from pp_highlighting import PPHighlighter, PPValidator
+from pp_highlighting import dummy_styler, PPHighlighter, PPValidator
 
 
 # pylint: disable=too-many-locals
-def repl(parser, hl_factory=None, *, prompt='> ', multiline=False, style=None,
+def repl(parser_factory, *, prompt='> ', multiline=False, style=None,
          validate_while_typing=True, validate=True, prompt_continuation=': ',
-         pygments_styles=False):
+         uses_pygments_tokens=False):
     """A read-eval-print loop for pyparsing-highlighting examples."""
 
     def prompt_continuation_fn(*args, **kwargs):
         return prompt_continuation
 
-    pph = None
-    if hl_factory is not None:
-        pph = PPHighlighter(hl_factory, pygments_styles=pygments_styles)
+    parser = parser_factory(dummy_styler)
+    pph = PPHighlighter(parser_factory,
+                        uses_pygments_tokens=uses_pygments_tokens)
     ppv = PPValidator(parser, multiline=multiline) if validate else None
     history = InMemoryHistory()
 

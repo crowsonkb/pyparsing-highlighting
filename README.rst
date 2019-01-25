@@ -49,8 +49,8 @@ The following code demonstrates the use of ``PPHighlighter``:
 This prints out the following to the terminal:
 
 .. image:: https://raw.githubusercontent.com/crowsonkb/pyparsing-highlighting/master/docs/source/example_ints.png
-   :width: 56px
-   :height: 18px
+   :width: 56
+   :height: 18
    :alt: 1, 2, 3
 
 The following code generates HTML:
@@ -65,7 +65,7 @@ The output is:
 
    <span class="highlight"><span class="int">1</span>, <span class="int">2</span>, <span class="int">3</span></span>
 
-There is also a lower-level API: :code:`pph.highlight('1, 2, 3')` returns the following::
+There is also a lower-level API—:code:`pph.highlight('1, 2, 3')` returns the following::
 
    FormattedText([('class:int', '1'), ('', ', '), ('class:int', '2'), ('', ', '), ('class:int', '3')])
 

@@ -1,4 +1,6 @@
-include docs/source/example_ints.png
+recursive-include docs *
+recursive-include examples *
+recursive-include tests *
 include LICENSE
 include README.rst
 include requirements.txt

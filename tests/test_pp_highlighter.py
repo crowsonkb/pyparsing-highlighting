@@ -132,7 +132,7 @@ class TestPPHighlighter(unittest.TestCase):
     def test_complex(self):
         pph = PPHighlighter(parser_factory)
         s = '(1 (2 3.00 () 4) 5)'
-        pph._parser.parseString(s, parseAll=True)
+        pph.expr.parseString(s, parseAll=True)
         fragments = pph.highlight(s)
         expected = [('', '('), ('class:int', '1'), ('', ' ('),
                     ('class:int', '2'), ('', ' '), ('class:float', '3.00'),
@@ -143,7 +143,7 @@ class TestPPHighlighter(unittest.TestCase):
     def test_adjacent_styled_fragments(self):
         pph = PPHighlighter(parser_factory_abc)
         s = 'aabca'
-        pph._parser.parseString(s, parseAll=True)
+        pph.expr.parseString(s, parseAll=True)
         fragments = pph.highlight(s)
         expected = [('#f00', 'a'), ('#f00', 'a'), ('#00f', 'b'), ('', 'c'),
                     ('#f00', 'a')]
@@ -174,12 +174,12 @@ class TestPPHighlighter(unittest.TestCase):
         self.assertEqual(html, expected)
 
     def test_pygments_class(self):
-        pph = PPHighlighter(parser_factory_pygments, pygments_styles=True)
+        pph = PPHighlighter(parser_factory_pygments, uses_pygments_tokens=True)
         fragments = pph.highlight('(1)')
         self.assertTrue(isinstance(fragments, FormattedText))
 
     def test_pygments_tokens(self):
-        pph = PPHighlighter(parser_factory_pygments, pygments_styles=True)
+        pph = PPHighlighter(parser_factory_pygments, uses_pygments_tokens=True)
         fragments = pph.highlight('(1)')
         expected = [('class:pygments.text', '('),
                     ('class:pygments.literal.number.integer', '1'),
@@ -187,7 +187,7 @@ class TestPPHighlighter(unittest.TestCase):
         self.assertEqual(fragments, expected)
 
     def test_html_pygments(self):
-        pph = PPHighlighter(parser_factory_pygments, pygments_styles=True)
+        pph = PPHighlighter(parser_factory_pygments, uses_pygments_tokens=True)
         html = pph.highlight_html('(1)')
         expected = '<span class="highlight">(<span class="mi">1</span>)</span>'
         self.assertEqual(html, expected)
@@ -234,14 +234,14 @@ class TestPPHighlighter(unittest.TestCase):
         pph = PPHighlighter(parser_factory_add_parse_action)
         fragments = pph.highlight('(1)')
         self.assertEqual(fragments, [('', '('), ('class:int', '1'), ('', ')')])
-        result = pph._parser.parseString('(1)', parseAll=True)
+        result = pph.expr.parseString('(1)', parseAll=True)
         self.assertEqual(result[0], -1)
 
     def test_set_parse_action(self):
         pph = PPHighlighter(parser_factory_set_parse_action)
         fragments = pph.highlight('(1)')
         self.assertEqual(fragments, [('', '('), ('class:int', '1'), ('', ')')])
-        result = pph._parser.parseString('(1)', parseAll=True)
+        result = pph.expr.parseString('(1)', parseAll=True)
         self.assertEqual(result[0], -1)
 
 

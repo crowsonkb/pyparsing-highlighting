@@ -4,7 +4,6 @@ from prompt_toolkit.styles import Style
 import pyparsing as pp
 from pyparsing import pyparsing_common as ppc
 
-from pp_highlighting import dummy_styler
 from .repl import repl
 
 
@@ -26,7 +25,7 @@ class Quote(Node):
 
 
 # pylint: disable=too-many-locals
-def parser_factory(styler=dummy_styler):
+def parser_factory(styler):
     """Builds the S-expression parser."""
     def cond_optional(expr):
         return pp.Optional(expr) if styler else expr
@@ -66,7 +65,6 @@ def parser_factory(styler=dummy_styler):
 
 def main():
     """The main function."""
-    parser = parser_factory()
     style = Style.from_dict({
         'call': '#4078f2',
         'constant': '#b27a01 bold',
@@ -74,7 +72,7 @@ def main():
         'quote': '#0092c7',
         'string': '#528f50',
     })
-    repl(parser, parser_factory, style=style)
+    repl(parser_factory, style=style)
 
 
 if __name__ == '__main__':

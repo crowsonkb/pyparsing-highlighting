@@ -183,7 +183,7 @@ epub_exclude_files = ['search.html']
 
 # -- Extension configuration -------------------------------------------------
 
-# autodoc_member_order = 'bysource'
+autodoc_member_order = 'bysource'
 napoleon_use_ivar = True
 napoleon_use_rtype = False
 

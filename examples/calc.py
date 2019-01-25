@@ -7,7 +7,6 @@ from prompt_toolkit.styles import Style
 import pyparsing as pp
 from pyparsing import pyparsing_common as ppc
 
-from pp_highlighting import dummy_styler
 from .repl import repl
 
 
@@ -43,7 +42,7 @@ def lassoc_mapreduce(func):
     return reducer
 
 
-def parser_factory(styler=dummy_styler):
+def parser_factory(styler):
     """Builds the calculator parser.
 
     If `styler` is specified, parse expressions to be syntax highlighted will
@@ -70,9 +69,8 @@ def parser_factory(styler=dummy_styler):
 
 def main():
     """The main function."""
-    parser = parser_factory()
     style = Style([('operator', '#b625b4 bold'), ('value', '#b27a01')])
-    repl(parser, parser_factory, style=style)
+    repl(parser_factory, style=style)
 
 
 if __name__ == '__main__':

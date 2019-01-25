@@ -10,18 +10,16 @@ from prompt_toolkit.lexers import Lexer
 from pygments.token import STANDARD_TYPES, Token
 import pyparsing as pp
 
-__all__ = ['dummy_styler', 'PPHighlighter']
+__all__ = ['DummyStyler', 'PPHighlighter', 'Styler']
 
 
-class Styler(pp.ParserElement):
+class StyledElement(pp.ParserElement):
     """Saves the original, untokenized text matched by a parse expression as a
     prompt_toolkit text fragment."""
     def __init__(self, fragments, style, expr):
         super().__init__()
         self._fragments = fragments
         self.style = style
-        if isinstance(expr, str):
-            expr = self._literalStringClass(expr)
         self.expr = expr
 
     def __str__(self):
@@ -34,35 +32,84 @@ class Styler(pp.ParserElement):
         return end_loc, toks
 
 
-class DummyStyler:
-    """A drop-in replacement for :meth:`PPHighlighter.styler` which merely
+class Styler:
+    """Wraps pyparsing parse expressions to capture styled text fragments."""
+    def __init__(self):
+        self.fragments = {}
+
+    def __call__(self, style, expr):
+        """Wraps the given parse expression to capture the original text it
+        matched, and returns the modified parse expression. The `style` argument
+        can be either a prompt_toolkit style string or a Pygments token.
+
+        Args:
+            style (Union[pygments.token.Token, str]): The style to set for this
+                text fragment, as a string or a Pygments token.
+            expr (Union[pyparsing.ParserElement, str]): The pyparsing parser to
+                wrap. If a literal string is specified, it will be wrapped by
+                :attr:`pyparsing.ParserElement._literalStringClass` (default
+                :class:`pyparsing.Literal`).
+
+        Returns:
+            pyparsing.ParserElement: The wrapped parser.
+        """
+        if isinstance(expr, str):
+            # pylint: disable=protected-access
+            expr = pp.ParserElement._literalStringClass(expr)
+        return StyledElement(self.fragments, style, expr)
+
+    def clear(self):
+        """Removes all captured styled text fragments."""
+        self.fragments.clear()
+
+    def get(self, loc):
+        """Returns the styled text fragment starting at a given location if it
+        exists, else `None`.
+
+        Args:
+            loc (int): The styled text fragment's start location.
+
+        Returns:
+            Optional[Tuple[Union[pygments.token.Token, str], str]]: The styled
+            text fragment, if it exists.
+        """
+        return self.fragments.get(loc)
+
+    def locs(self):
+        """Returns a sorted list of styled text start locations.
+
+        Returns:
+            List[int]: A sorted list of styled text start locations.
+        """
+        return sorted(self.fragments)
+
+
+class DummyStyler(Styler):
+    """A drop-in replacement for :class:`Styler` which, when called, merely
     returns a copy of the given parse expression without capturing text or
-    applying styles. To simplify testing whether a parser factory has been
-    passed :func:`dummy_styler`, :code:`bool(dummy_styler)` is `False`.
-
-    Args:
-        style (Union[str, pygments.token.Token]): Ignored.
-        expr (Union[str, pyparsing.ParserElement]): Copied, unless it is a
-            string literal, in which case it will be wrapped by
-            :attr:`pyparsing.ParserElement._literalStringClass` (default
-            :class:`pyparsing.Literal`).
-
-    Returns:
-        pyparsing.ParserElement: A copy of the input parser element.
+    applying styles. To aid in testing whether a parser factory has been passed
+    a :class:`DummyStyler` object, :code:`bool(DummyStyler())` is `False`.
     """
     def __bool__(self):
         return False
 
     def __call__(self, style, expr):
+        """Returns a copy of the given parse expression.
+
+        Args:
+            style (Union[pygments.token.Token, str]): Ignored.
+            expr (Union[pyparsing.ParserElement, str]): Copied, unless it is a
+                string literal, in which case it will be wrapped by
+                :attr:`pyparsing.ParserElement._literalStringClass` (default
+                :class:`pyparsing.Literal`).
+
+        Returns:
+            pyparsing.ParserElement: A copy of the input parse expression.
+        """
         if isinstance(expr, str):
             # pylint: disable=protected-access
             return pp.ParserElement._literalStringClass(expr)
         return expr.copy()
-
-    def __repr__(self):
-        return '<{.__module__}.dummy_styler(style, expr)>'.format(self)
-
-dummy_styler = DummyStyler()
 
 
 class PPHighlighter(Lexer):
@@ -75,16 +122,13 @@ class PPHighlighter(Lexer):
     for details), its :meth:`highlight_html` method, and by passing it as the
     `lexer` argument to a :class:`prompt_toolkit.PromptSession`.
     """
-
-    def __init__(self, parser_factory, *, pygments_styles=False):
+    def __init__(self, parser_factory, *, uses_pygments_tokens=False):
         """Constructs a new :class:`PPHighlighter`.
 
         You should supply a parser factory, a function that takes one argument
-        and returns a parse expression. :class:`PPHighlighter` will pass its
-        :meth:`styler` method as the argument (see :meth:`styler` for more
-        details). :meth:`styler` modifies parse expressions to capture and style
-        the text they match. The `style` argument to :meth:`styler` can be
-        either a prompt_toolkit style string or a Pygments token.
+        and returns a parse expression. :class:`PPHighlighter` will pass a
+        :class:`Styler` object as the argument (see :class:`Styler` for more
+        details).
 
         Examples:
 
@@ -100,39 +144,18 @@ class PPHighlighter(Lexer):
             :func:`prompt_toolkit.print_formatted_text`.
 
         Args:
-            parser_factory (Callable[[Callable], pyparsing.ParserElement]): The
+            parser_factory (Callable[[Styler], pyparsing.ParserElement]): The
                 parser factory.
-            pygments_styles (bool): Whether or not the parser is styled using
-                Pygments tokens.
+            uses_pygments_tokens (bool): Whether or not the parser is styled
+                using Pygments tokens.
         """
-        self._fragments = {}
-        self._pygments_styles = pygments_styles
-        self._parser = parser_factory(self.styler)
-        self._parser.parseWithTabs()
+        self.styler = Styler()
+        self.uses_pygments_tokens = uses_pygments_tokens
+        self.expr = parser_factory(self.styler)
+        self.expr.parseWithTabs()
 
     def __repr__(self):
-        return '{0.__class__.__name__}({0._parser!r})'.format(self)
-
-    def styler(self, style, expr):
-        """Wraps a pyparsing parse expression to capture text fragments.
-
-        :meth:`styler` wraps the given parse expression, capturing the original
-        text it matched, and returns the modified parse expression. The `style`
-        argument can be either a prompt_toolkit style string or a Pygments
-        token.
-
-        Args:
-            style (Union[str, pygments.token.Token]): The style to set for this
-                text fragment, as a string or a Pygments token.
-            expr (Union[str, pyparsing.ParserElement]): The pyparsing parser to
-                wrap. If a literal string is specified, it will be wrapped by
-                :attr:`pyparsing.ParserElement._literalStringClass` (default
-                :class:`pyparsing.Literal`).
-
-        Returns:
-            pyparsing.ParserElement: The wrapped parser.
-        """
-        return Styler(self._fragments, style, expr)
+        return '{0.__class__.__name__}({0.expr!r})'.format(self)
 
     def _scan_string(self, s):
         """Runs the parser over the input string, capturing styled text.
@@ -140,9 +163,9 @@ class PPHighlighter(Lexer):
         Adapted from :meth:`pyparsing.ParserElement.scanString` for custom
         exception handling.
         """
-        if not self._parser.streamlined:
-            self._parser.streamline()
-        for e in self._parser.ignoreExprs:
+        if not self.expr.streamlined:
+            self.expr.streamline()
+        for e in self.expr.ignoreExprs:
             e.streamline()
 
         loc = 0
@@ -150,9 +173,9 @@ class PPHighlighter(Lexer):
         pp.ParserElement.resetCache()
         while loc <= len(s):
             try:
-                preloc = self._parser.preParse(s, loc)
+                preloc = self.expr.preParse(s, loc)
                 # pylint: disable=protected-access
-                nextloc, _ = self._parser._parse(s, preloc, callPreParse=False)
+                nextloc, _ = self.expr._parse(s, preloc, callPreParse=False)
             except Exception as err:  # pylint: disable=broad-except
                 if preloc is None:
                     raise
@@ -165,23 +188,23 @@ class PPHighlighter(Lexer):
 
     def _highlight(self, s):
         """Gathers captured styled text and intervening unstyled text into a
-        :class:`FormattedText` instance."""
+        :class:`prompt_toolkit.formatted_text.FormattedText` instance."""
         if not isinstance(s, str):
             msg = 'Cannot highlight type {}, only str.'
             raise TypeError(msg.format(type(s).__name__))
 
-        default_style = Token.Text if self._pygments_styles else ''
+        default_style = Token.Text if self.uses_pygments_tokens else ''
 
-        self._fragments.clear()
+        self.styler.clear()
         self._scan_string(s)
-        locs = sorted(self._fragments)
+        locs = self.styler.locs()
         locs.append(len(s))
 
         i = 0
         loc = 0
         fragments = FormattedText()
         while loc < len(s):
-            fragment = self._fragments.get(loc)
+            fragment = self.styler.get(loc)
             if fragment:
                 fragments.append(fragment)
                 loc += len(fragment[1])
@@ -204,23 +227,13 @@ class PPHighlighter(Lexer):
             FormattedText: The resulting list of prompt_toolkit text fragments.
         """
         fragments = self._highlight(s)
-        if self._pygments_styles:
+        if self.uses_pygments_tokens:
             return to_formatted_text(PygmentsTokens(fragments))
         return fragments
 
-    def print(self, *values, **kwargs):
-        """::
-
-            print(*values, sep=' ', end='\\n', file=None, flush=False,
-                  style=None, output=None, color_depth=None,
-                  style_transformation=None, include_default_pygments_style=None)
-
-        Highlights and prints the values to a stream, or to `sys.stdout` by
-        default. It calls :func:`prompt_toolkit.print_formatted_text` internally
-        and takes the same keyword arguments as it (compatible with the builtin
-        :func:`print`).
-        """
-        print_formatted_text(*map(self.highlight, map(str, values)), **kwargs)
+    def lex_document(self, document):
+        lines = list(split_lines(self.highlight(document.text)))
+        return lambda i: lines[i]
 
     @classmethod
     def _pygments_css_class(cls, token):
@@ -249,7 +262,7 @@ class PPHighlighter(Lexer):
         table = str.maketrans({'.': '-'})
         for style, text in fragments:
             classes = []
-            if self._pygments_styles:
+            if self.uses_pygments_tokens:
                 classes.append(self._pygments_css_class(style))
             else:
                 for st in style.split():
@@ -262,6 +275,18 @@ class PPHighlighter(Lexer):
         tags.append('</span>')
         return ''.join(tags)
 
-    def lex_document(self, document):
-        lines = list(split_lines(self.highlight(document.text)))
-        return lambda i: lines[i]
+    def print(self, *values, **kwargs):
+        """Highlights and prints the values to a stream, or to `sys.stdout` by
+        default. It calls :func:`prompt_toolkit.print_formatted_text` internally
+        and takes the same keyword arguments as it (compatible with the builtin
+        :func:`print`).
+
+        Default values of keyword-only arguments::
+
+            print(*values, sep=' ', end='\\n', file=None, flush=False,
+                  style=None, output=None, color_depth=None,
+                  style_transformation=None,
+                  include_default_pygments_style=None)
+        """
+        print_formatted_text(*map(lambda s: self.highlight(str(s)), values),
+                             **kwargs)
