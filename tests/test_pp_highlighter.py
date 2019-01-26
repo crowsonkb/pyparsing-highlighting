@@ -1,4 +1,4 @@
-"""Unit tests for pp_highlighter."""
+"""Unit tests for pp_highlighter.PPHighlighter."""
 
 # pylint: disable=missing-docstring, protected-access, too-many-public-methods
 
