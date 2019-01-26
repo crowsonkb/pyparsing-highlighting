@@ -45,8 +45,8 @@ def lassoc_mapreduce(func):
 def parser_factory(styler):
     """Builds the calculator parser.
 
-    If `styler` is specified, parse expressions to be syntax highlighted will
-    be assigned classes.
+    If `styler` is not a :class:`DummyStyler`, parse expressions to be syntax
+    highlighted will be assigned classes.
     """
     LPAR, RPAR = map(pp.Suppress, '()')
     PLUS, MINUS, STAR, SLASH = map(partial(styler, 'class:operator'), '+-*/')
