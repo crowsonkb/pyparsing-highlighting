@@ -1,5 +1,7 @@
 """A PPHighlighter benchmark."""
 
+# pylint: disable=no-name-in-module
+
 import random
 import time
 
