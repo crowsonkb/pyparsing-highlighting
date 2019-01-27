@@ -259,7 +259,7 @@ class PPHighlighter(Lexer):
             str: The generated HTML.
         """
         fragments = self._highlight(s)
-        tags = ['<span class="highlight">']
+        tags = ['<pre class="highlight">']
         template = '<span class="{}">{}</span>'
         table = str.maketrans({'.': '-'})
         for style, text in fragments:
@@ -275,7 +275,7 @@ class PPHighlighter(Lexer):
                                             html.escape(text)))
             else:
                 tags.append(html.escape(text))
-        tags.append('</span>')
+        tags.append('</pre>')
         return ''.join(tags)
 
     def print(self, *values, **kwargs):
