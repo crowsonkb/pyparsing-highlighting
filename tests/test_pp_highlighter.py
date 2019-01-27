@@ -152,25 +152,25 @@ class TestPPHighlighter(unittest.TestCase):
     def test_html(self):
         pph = PPHighlighter(parser_factory)
         html = pph.highlight_html('(1)')
-        expected = '<span class="highlight">(<span class="int">1</span>)</span>'
+        expected = '<pre class="highlight">(<span class="int">1</span>)</pre>'
         self.assertEqual(html, expected)
 
     def test_html_multiclass(self):
         pph = PPHighlighter(parser_factory_multiclass)
         html = pph.highlight_html('(1)')
-        expected = '<span class="highlight">(<span class="int number">1</span>)</span>'
+        expected = '<pre class="highlight">(<span class="int number">1</span>)</pre>'
         self.assertEqual(html, expected)
 
     def test_html_escape(self):
         pph = PPHighlighter(parser_factory_htmlescape)
         html = pph.highlight_html('<1>')
-        expected = '<span class="highlight">&lt;<span class="int">1</span>&gt;</span>'
+        expected = '<pre class="highlight">&lt;<span class="int">1</span>&gt;</pre>'
         self.assertEqual(html, expected)
 
     def test_html_dotted_classes(self):
         pph = PPHighlighter(parser_factory_dotted_classes)
         html = pph.highlight_html('(1)')
-        expected = '<span class="highlight">(<span class="number-int">1</span>)</span>'
+        expected = '<pre class="highlight">(<span class="number-int">1</span>)</pre>'
         self.assertEqual(html, expected)
 
     def test_pygments_class(self):
@@ -189,7 +189,7 @@ class TestPPHighlighter(unittest.TestCase):
     def test_html_pygments(self):
         pph = PPHighlighter(parser_factory_pygments, uses_pygments_tokens=True)
         html = pph.highlight_html('(1)')
-        expected = '<span class="highlight">(<span class="mi">1</span>)</span>'
+        expected = '<pre class="highlight">(<span class="mi">1</span>)</pre>'
         self.assertEqual(html, expected)
 
     def test_document_lexer(self):
