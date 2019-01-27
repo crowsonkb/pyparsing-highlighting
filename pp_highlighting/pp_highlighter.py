@@ -245,7 +245,7 @@ class PPHighlighter(Lexer):
         except KeyError:
             return cls._pygments_css_class(token.parent)
 
-    def highlight_html(self, s):
+    def highlight_html(self, s, *, css_class='highlight'):
         """Highlights a string, returning HTML.
 
         Only CSS class names are currently supported. Parts of the style string
@@ -254,12 +254,13 @@ class PPHighlighter(Lexer):
 
         Args:
             s (str): The input string.
+            css_class (str): The CSS class for the wrapping tag.
 
         Returns:
             str: The generated HTML.
         """
         fragments = self._highlight(s)
-        tags = ['<pre class="highlight">']
+        tags = ['<pre class="{}">'.format(css_class)]
         template = '<span class="{}">{}</span>'
         table = str.maketrans({'.': '-'})
         for style, text in fragments:

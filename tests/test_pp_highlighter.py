@@ -155,6 +155,12 @@ class TestPPHighlighter(unittest.TestCase):
         expected = '<pre class="highlight">(<span class="int">1</span>)</pre>'
         self.assertEqual(html, expected)
 
+    def test_html_wrapping_class(self):
+        pph = PPHighlighter(parser_factory)
+        html = pph.highlight_html('(1)', css_class='thing')
+        expected = '<pre class="thing">(<span class="int">1</span>)</pre>'
+        self.assertEqual(html, expected)
+
     def test_html_multiclass(self):
         pph = PPHighlighter(parser_factory_multiclass)
         html = pph.highlight_html('(1)')
