@@ -8,4 +8,4 @@ dummy_styler = DummyStyler()
 __all__ = ['dummy_styler', 'DummyStyler', 'PPHighlighter', 'PPValidator',
            'Styler']
 
-__version__ = '0.2.2'
+__version__ = '0.2.3'
