@@ -65,7 +65,7 @@ The output is:
 
 .. code:: HTML
 
-   <span class="highlight"><span class="int">1</span>, <span class="int">2</span>, <span class="int">3</span></span>
+   <pre class="highlight"><span class="int">1</span>, <span class="int">2</span>, <span class="int">3</span></pre>
 
 There is also a lower-level API—:code:`pph.highlight('1, 2, 3')` returns the following::
 
