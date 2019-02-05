@@ -13,6 +13,8 @@ from pyparsing import pyparsing_common as ppc
 
 from pp_highlighting import dummy_styler, PPHighlighter
 
+N_RUNS = 5
+
 
 def parser_factory(styler):
     """Builds a parser for nested comma-separated lists of integers (like
@@ -41,11 +43,14 @@ def main():
 
     # Perform the benchmarks
     t1 = time.perf_counter()
-    result = expr.parseString(s, parseAll=True)[0]
+    for _ in range(N_RUNS):
+        result = expr.parseString(s, parseAll=True)[0]
     t2 = time.perf_counter()
-    fragments = pph.highlight(s)
+    for _ in range(N_RUNS):
+        fragments = pph.highlight(s)
     t3 = time.perf_counter()
-    highlight(s, lexer, formatter)
+    for _ in range(N_RUNS):
+        highlight(s, lexer, formatter)
     t4 = time.perf_counter()
 
     # Verify the results
@@ -54,9 +59,9 @@ def main():
 
     # Display the results
     print('Input string size: {} chars'.format(len(s)))
-    print('Parsing completed in {:.3f}ms'.format((t2 - t1) * 1000))
-    print('Highlighting completed in {:.3f}ms'.format((t3 - t2) * 1000))
-    print('Pygments highlighting completed in {:.3f}ms'.format((t4 - t3) * 1000))
+    print('Parsing completed in {:.3f}ms'.format((t2 - t1) / N_RUNS * 1000))
+    print('Highlighting completed in {:.3f}ms'.format((t3 - t2) / N_RUNS * 1000))
+    print('Pygments highlighting completed in {:.3f}ms'.format((t4 - t3) / N_RUNS * 1000))
 
 
 if __name__ == '__main__':
