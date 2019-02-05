@@ -1,4 +1,8 @@
-"""A JSON parser."""
+"""An example JSON parser.
+
+Note that escape sequences inside strings will be recognized and highlighted
+using a different style than the rest of the string.
+"""
 
 from prompt_toolkit.styles import Style
 import pyparsing as pp
