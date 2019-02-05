@@ -64,6 +64,15 @@ def parser_factory_pygments(styler):
     return c
 
 
+def parser_factory_pygments_subtype(styler):
+    LPAR, RPAR = map(pp.Suppress, '()')
+    a = styler(Token.Number.Integer.Subtype, ppc.integer)
+    b = styler(Token.Number.Float.Subtype, ppc.fnumber)
+    c = pp.Forward()
+    c <<= a ^ b | LPAR + pp.ZeroOrMore(c) + RPAR
+    return c
+
+
 def parser_factory_exception(styler):
     def exception():
         raise RuntimeError('test')
@@ -194,6 +203,12 @@ class TestPPHighlighter(unittest.TestCase):
 
     def test_html_pygments(self):
         pph = PPHighlighter(parser_factory_pygments, uses_pygments_tokens=True)
+        html = pph.highlight_html('(1)')
+        expected = '<pre class="highlight">(<span class="mi">1</span>)</pre>'
+        self.assertEqual(html, expected)
+
+    def test_html_pygments_subtype(self):
+        pph = PPHighlighter(parser_factory_pygments_subtype, uses_pygments_tokens=True)
         html = pph.highlight_html('(1)')
         expected = '<pre class="highlight">(<span class="mi">1</span>)</pre>'
         self.assertEqual(html, expected)
