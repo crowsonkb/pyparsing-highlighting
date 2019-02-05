@@ -17,7 +17,7 @@ def parser_factory(styler):
     LBRK, RBRK, LBRC, RBRC, COLON, DQUO = map(pp.Suppress, '[]{}:"')
     DQUO = styler('class:string', DQUO)
 
-    control_chars = ''.join(map(chr, range(0, 32))) + '\x7f'
+    control_chars = ''.join(map(chr, range(32))) + '\x7f'
     normal_chars = pp.CharsNotIn(control_chars + '\\"')
     s_quo = pp.Literal('\\"').addParseAction(pp.replaceWith('"'))
     s_sol = pp.Literal('\\/').addParseAction(pp.replaceWith('/'))
