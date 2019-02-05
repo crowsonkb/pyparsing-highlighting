@@ -55,6 +55,7 @@ def parser_factory(styler):
     constant = styler('class:constant', true | false | null)
 
     value <<= obj | array | string | styler('class:number', ppc.number) | constant
+    value.parseWithTabs()
     value.setName('JSON value')
     return value
 
