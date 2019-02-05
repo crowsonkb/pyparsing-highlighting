@@ -73,7 +73,7 @@ There is also a lower-level API—:code:`pph.highlight('1, 2, 3')` returns the f
 
 A :class:`FormattedText` instance can be passed to :func:`prompt_toolkit.print_formatted_text`, along with a :class:`Style` mapping the class names to colors, for display on the terminal.
 
-:class:`PPHighlighter` can also be passed to a :class:`prompt_toolkit.PromptSession` as the `lexer` argument, which will perform syntax highlighting as you type. For an example of this, see ``examples/calc.py`` and ``examples/repl.py``.
+:class:`PPHighlighter` can also be passed to a :class:`prompt_toolkit.PromptSession` as the `lexer` argument, which will perform syntax highlighting as you type. For examples of this, see ``examples/calc.py``, ``examples/json_pph.py``, and ``examples/sexp.py``.
 
 Module pp_highlighting
 ----------------------
