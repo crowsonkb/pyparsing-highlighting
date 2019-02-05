@@ -207,6 +207,12 @@ class TestPPHighlighter(unittest.TestCase):
         expected = '<pre class="highlight">(<span class="mi">1</span>)</pre>'
         self.assertEqual(html, expected)
 
+    def test_html_pygments_css_class(self):
+        pph = PPHighlighter(parser_factory_pygments, uses_pygments_tokens=True)
+        html = pph.highlight_html('(1)', css_class='hl')
+        expected = '<pre class="hl">(<span class="mi">1</span>)</pre>'
+        self.assertEqual(html, expected)
+
     def test_html_pygments_subtype(self):
         pph = PPHighlighter(parser_factory_pygments_subtype, uses_pygments_tokens=True)
         html = pph.highlight_html('(1)')
