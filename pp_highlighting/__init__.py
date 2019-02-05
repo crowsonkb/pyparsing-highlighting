@@ -11,4 +11,4 @@ factories.
 __all__ = ['dummy_styler', 'DummyStyler', 'PPHighlighter', 'PPValidator',
            'Styler']
 
-__version__ = '0.2.3'
+__version__ = '0.2.4'
