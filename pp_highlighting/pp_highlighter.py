@@ -69,10 +69,7 @@ class Styler:
         Args:
             loc (int): The styled text fragment to delete's start location.
         """
-        try:
-            del self.fragments[loc]
-        except KeyError:
-            pass
+        self.fragments.pop(loc, None)
 
     def get(self, loc):
         """Returns the styled text fragment starting at a given location if it
