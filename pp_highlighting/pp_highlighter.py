@@ -62,6 +62,18 @@ class Styler:
         """Removes all captured styled text fragments."""
         self.fragments.clear()
 
+    def delete(self, loc):
+        """Removes the styled text fragment starting at a given location if it
+        exists.
+
+        Args:
+            loc (int): The styled text fragment to delete's start location.
+        """
+        try:
+            del self.fragments[loc]
+        except KeyError:
+            pass
+
     def get(self, loc):
         """Returns the styled text fragment starting at a given location if it
         exists, else `None`.
@@ -180,6 +192,7 @@ class PPHighlighter(Lexer):
             except Exception as err:  # pylint: disable=broad-except
                 if preloc is None:
                     raise
+                self.styler.delete(preloc)
                 loc = preloc + 1
                 if not isinstance(err, pp.ParseBaseException):
                     msg = 'Exception during parsing: {0.__class__.__name__}: {0}'

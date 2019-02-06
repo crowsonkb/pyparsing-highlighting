@@ -30,6 +30,20 @@ class TestStyler(unittest.TestCase):
         styler.clear()
         self.assertEqual(styler.get(0), None)
 
+    def test_delete(self):
+        styler = Styler()
+        integer = styler('class:int', ppc.integer)
+        integer.parseString('123', parseAll=True)
+        styler.delete(0)
+        self.assertEqual(styler.get(0), None)
+
+    def test_delete_no_error(self):
+        styler = Styler()
+        integer = styler('class:int', ppc.integer)
+        integer.parseString('123', parseAll=True)
+        self.assertEqual(styler.get(1), None)
+        styler.delete(1)
+
     def test_locs(self):
         styler = Styler()
         parser = pp.OneOrMore(styler('class:int', ppc.integer))

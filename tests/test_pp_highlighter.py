@@ -73,6 +73,15 @@ def parser_factory_pygments_subtype(styler):
     return c
 
 
+def parser_factory_backout(styler):
+    LPAR, RPAR = map(pp.Suppress, '()')
+    a = styler('class:int', ppc.integer) + '='
+    b = styler('class:float', ppc.fnumber) + '='
+    c = pp.Forward()
+    c <<= a ^ b | LPAR + pp.ZeroOrMore(c) + RPAR
+    return c
+
+
 def parser_factory_exception(styler):
     def exception():
         raise RuntimeError('test')
@@ -240,6 +249,12 @@ class TestPPHighlighter(unittest.TestCase):
                     ('', ' (a '),
                     ('class:int', '2'),
                     ('', '))')]
+        self.assertEqual(fragments, expected)
+
+    def test_backout(self):
+        pph = PPHighlighter(parser_factory_backout)
+        fragments = pph.highlight('(1)')
+        expected = [('', '(1)')]
         self.assertEqual(fragments, expected)
 
     def test_warning(self):
