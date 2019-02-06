@@ -77,6 +77,7 @@ A ``FormattedText`` instance can be passed to ``prompt_toolkit.print_formatted_t
 
    python3 -m examples.calc
    python3 -m examples.json_pph
+   python3 -m examples.repr
    python3 -m examples.sexp
 
 Testing
