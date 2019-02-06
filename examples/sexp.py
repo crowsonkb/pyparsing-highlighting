@@ -65,6 +65,7 @@ def parser_factory(styler):
 
 def main():
     """The main function."""
+    print(__doc__)
     style = Style.from_dict({
         'call': '#4078f2',
         'constant': '#b27a01 bold',

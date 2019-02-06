@@ -62,6 +62,7 @@ def parser_factory(styler):
 
 def main():
     """The main function."""
+    print(__doc__)
     style = Style([
         ('constant', '#b27a01 bold'),
         ('escape', '#0092c7'),

@@ -69,6 +69,7 @@ def parser_factory(styler):
 
 def main():
     """The main function."""
+    print(__doc__)
     style = Style([('operator', '#b625b4 bold'), ('value', '#b27a01')])
     repl(parser_factory, style=style)
 
