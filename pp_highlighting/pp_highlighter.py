@@ -167,6 +167,10 @@ class PPHighlighter(Lexer):
                 parser factory.
             uses_pygments_tokens (bool): Whether or not the parser is styled
                 using Pygments tokens.
+
+        Raises:
+            ImportError: If `uses_pygments_tokens` is `True` and Pygments is
+                not installed.
         """
         self.styler = Styler()
         if uses_pygments_tokens and not HAS_PYGMENTS:
