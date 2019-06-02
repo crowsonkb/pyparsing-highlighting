@@ -84,7 +84,7 @@ There is also a lower-level API—:code:`pph.highlight('1, 2, 3')` returns the f
 
    FormattedText([('class:int', '1'), ('', ', '), ('class:int', '2'), ('', ', '), ('class:int', '3')])
 
-A :class:`FormattedText` instance can be passed to :func:`prompt_toolkit.print_formatted_text`, along with a :class:`Style` mapping the class names to colors, for display on the terminal. See the `prompt_toolkit formatted text documentation <https://python-prompt-toolkit.readthedocs.io/en/stable/pages/printing_text.html#style-text-tuples>`_.
+A :class:`FormattedText` instance can be passed to :func:`prompt_toolkit.print_formatted_text`, along with a :class:`Style` mapping the class names to colors, for display on the terminal. See the prompt_toolkit `formatted text documentation <https://python-prompt-toolkit.readthedocs.io/en/stable/pages/printing_text.html#style-text-tuples>`_ and `formatted text API documentation <https://python-prompt-toolkit.readthedocs.io/en/stable/pages/reference.html#module-prompt_toolkit.formatted_text>`_.
 
 :class:`PPHighlighter` can also be passed to a :class:`prompt_toolkit.PromptSession` as the `lexer` argument, which will perform syntax highlighting as you type. For examples of this, see ``examples/calc.py``, ``examples/json_pph.py``, ``examples/repr.py``, and ``examples/sexp.py``.  The examples can be run by (from the project root directory):
 
