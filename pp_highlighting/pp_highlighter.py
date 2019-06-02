@@ -1,6 +1,8 @@
 """Syntax highlighting for prompt_toolkit and HTML with pyparsing."""
 
 import html
+import io
+import sys
 import warnings
 
 from prompt_toolkit import print_formatted_text
@@ -304,7 +306,7 @@ class PPHighlighter(Lexer):
         tags.append('</pre>')
         return ''.join(tags)
 
-    def print(self, *values, **kwargs):
+    def print(self, *values, file=sys.stdout, **kwargs):
         """Highlights and prints the values to a stream, or to `sys.stdout` by
         default. It calls :func:`prompt_toolkit.print_formatted_text` internally
         and takes the same keyword arguments as it (compatible with the builtin
@@ -312,10 +314,18 @@ class PPHighlighter(Lexer):
 
         Default values of keyword-only arguments::
 
-            print(*values, sep=' ', end='\\n', file=None, flush=False,
+            print(*values, sep=' ', end='\\n', file=sys.stdout, flush=False,
                   style=None, output=None, color_depth=None,
-                  style_transformation=None,
-                  include_default_pygments_style=None)
+                  style_transformation=None, include_default_pygments_style=None)
         """
+        # Monkey patch non-tty file objects for compatibility
+        if file is not None:
+            try:
+                file.fileno()
+            except io.UnsupportedOperation:
+                file.fileno = lambda: None
+            if not hasattr(file, 'encoding'):
+                file.encoding = ''
+
         print_formatted_text(*map(lambda s: self.highlight(str(s)), values),
-                             **kwargs)
+                             file=file, **kwargs)
