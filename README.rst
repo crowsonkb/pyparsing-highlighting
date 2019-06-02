@@ -9,9 +9,12 @@ Requirements
 ------------
 
 - `Python <https://www.python.org>`_ 3.5+
+
+Note that `PyPy <https://pypy.org>`_, a JIT compiler implementation of Python, is often able to achieve around 5x the performance of CPython, the reference Python implementation.
+
 - `pyparsing <https://github.com/pyparsing/pyparsing>`_
 - `prompt_toolkit <https://github.com/prompt-toolkit/python-prompt-toolkit>`_ 2.0+
-- `Pygments <http://pygments.org>`_ (optional)
+- `Pygments <http://pygments.org>`_ (optional; needed to use Pygments styles)
 
 Installation
 ------------
@@ -25,6 +28,12 @@ Or, after cloning the repository on GitHub:
 .. code:: bash
 
    python3 setup.py install
+
+(or, with PyPy):
+
+.. code:: bash
+
+   pypy3 setup.py install
 
 Examples
 --------
