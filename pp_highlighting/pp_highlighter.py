@@ -16,6 +16,7 @@ __all__ = ['DummyStyler', 'PPHighlighter', 'Styler']
 class StyledElement(pp.ParserElement):
     """Saves the original, untokenized text matched by a parse expression as a
     prompt_toolkit text fragment."""
+
     def __init__(self, fragments, style, expr):
         super().__init__()
         self._fragments = fragments
@@ -34,6 +35,7 @@ class StyledElement(pp.ParserElement):
 
 class Styler:
     """Wraps pyparsing parse expressions to capture styled text fragments."""
+
     def __init__(self):
         self.fragments = {}
 
@@ -99,6 +101,7 @@ class DummyStyler(Styler):
     applying styles. To aid in testing whether a parser factory has been passed
     a :class:`DummyStyler` object, :code:`bool(DummyStyler())` is `False`.
     """
+
     def __bool__(self):
         return False
 
@@ -132,6 +135,7 @@ class PPHighlighter(Lexer):
     and by passing it as the `lexer` argument to a
     :class:`prompt_toolkit.PromptSession`.
     """
+
     def __init__(self, parser_factory, *, uses_pygments_tokens=False):
         """Constructs a new :class:`PPHighlighter`.
 
