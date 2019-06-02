@@ -321,14 +321,23 @@ class PPHighlighter(Lexer):
                   style=None, output=None, color_depth=None,
                   style_transformation=None, include_default_pygments_style=None)
         """
+        orig_fileno = None
+
         # Monkey patch non-tty file objects for compatibility
         if file is not None:
             try:
                 file.fileno()
             except io.UnsupportedOperation:
+                orig_fileno = file.fileno
                 file.fileno = lambda: None
             if not hasattr(file, 'encoding'):
                 file.encoding = ''
 
         print_formatted_text(*map(lambda s: self.highlight(str(s)), values),
                              file=file, **kwargs)
+
+        # Unpatch
+        if orig_fileno is not None:
+            file.fileno = orig_fileno
+        if file is not None and not file.encoding:
+            del file.encoding
