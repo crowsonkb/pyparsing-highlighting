@@ -3,4 +3,5 @@ recursive-include examples *
 recursive-include tests *
 include LICENSE
 include README.rst
+include requirements-dev.txt
 include requirements.txt
