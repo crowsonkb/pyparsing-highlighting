@@ -95,6 +95,32 @@ A :class:`FormattedText` instance can be passed to :func:`prompt_toolkit.print_f
    python3 -m examples.repr
    python3 -m examples.sexp
 
+Error Handling
+--------------
+
+If the parse expression should fail to match, it will be tried again at successive locations until it succeeds. Text encountered during retrying will be passed through unstyled. For example:
+
+.. code:: python
+
+   from pp_highlighting import PPHighlighter
+   import pyparsing as pp
+   from pyparsing import pyparsing_common as ppc
+
+   def parser_factory(styler):
+       return styler('ansicyan', ppc.integer) + styler('ansired', ppc.identifier)
+
+   pph = PPHighlighter(parser_factory)
+   pph.print('1a 2b three 4c')
+
+The output is:
+
+.. image:: 1234.png
+   :scale: 50%
+
+Note that *this parse expression does not explicitly match more than one integer/identifier pair*. After it matches, it is retried on the space after the first pair, which fails, and then it is retried again starting on the first character of the second pair, which succeeds. It is then retried until it reaches ``4c``, which succeeds.
+
+It is often possible to take advantage of pyparsing-highlighting's error handling to write a simplified parse expression that does not parse a language fully but which still does 'lexer-like' analysis in a way that is robust to errors, and which continues to work even while the user is still typing. ``examples/repr.py`` is an example along these lines.
+
 Testing
 -------
 
