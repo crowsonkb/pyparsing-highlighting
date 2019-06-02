@@ -1,9 +1,11 @@
 pyparsing-highlighting
 ======================
 
-Syntax highlighting with `pyparsing <https://github.com/pyparsing/pyparsing>`_, supporting both HTML output and `prompt_toolkit <https://github.com/prompt-toolkit/python-prompt-toolkit>`_–style terminal output. The ``PPHighlighter`` class can also be used as a lexer for syntax highlighting as you type in ``prompt_toolkit``. It is compatible with existing `Pygments <http://pygments.org>`_ styles.
+Syntax highlighting with `pyparsing <https://github.com/pyparsing/pyparsing>`_, supporting both HTML output and `prompt_toolkit <https://github.com/prompt-toolkit/python-prompt-toolkit>`_–style terminal output. The ``PPHighlighter`` class can also be used as a lexer for syntax highlighting as you type in prompt_toolkit. It is compatible with existing `Pygments <http://pygments.org>`_ styles.
 
-Read the documentation on `readthedocs <https://pyparsing-highlighting.readthedocs.io/en/stable/>`_.
+The main benefit of pyparsing-highlighting over Pygments is that pyparsing grammars are both more powerful and easier to understand than Pygments lexers. pyparsing implements `parsing expression grammars <https://en.wikipedia.org/wiki/Parsing_expression_grammar>`_ using `parser combinators <https://en.wikipedia.org/wiki/Parser_combinator>`_, which means that higher level parse expressions are built up in Python code out of lower level parse expressions in a straightforward to construct, readable, modular, well-structured, and easily maintainable way.
+
+See `the official pyparsing documentation <https://pyparsing-docs.readthedocs.io/en/latest/index.html>`_ or `my unofficial (epydoc) documentation <https://pyparsing-doc.neocities.org>`_; read the pyparsing-highlighting documentation on `readthedocs <https://pyparsing-highlighting.readthedocs.io/en/latest/>`_.
 
 Requirements
 ------------
