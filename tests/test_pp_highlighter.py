@@ -2,8 +2,10 @@
 
 # pylint: disable=missing-docstring, protected-access, too-many-public-methods
 
+import sys
 import unittest
 
+from prompt_toolkit import print_formatted_text
 from prompt_toolkit.document import Document
 from prompt_toolkit.formatted_text import FormattedText
 import pyparsing as pp
@@ -11,10 +13,17 @@ from pyparsing import pyparsing_common as ppc
 
 from pp_highlighting import PPHighlighter
 
+
+def info(msg):
+    print_formatted_text(FormattedText([('ansicyan', msg)]), file=sys.stderr)
+
+
 try:
     from pygments.token import Token
+    info('Pygments is installed; skipping no-Pygments unit tests.')
     HAS_PYGMENTS = True
 except ImportError:
+    info('Pygments is not installed; skipping Pygments unit tests.')
     HAS_PYGMENTS = False
 
 
