@@ -8,6 +8,7 @@ import warnings
 from prompt_toolkit import print_formatted_text
 from prompt_toolkit.formatted_text import (FormattedText, PygmentsTokens,
                                            split_lines, to_formatted_text)
+from prompt_toolkit.output.vt100 import Vt100_Output
 from prompt_toolkit.lexers import Lexer
 import pyparsing as pp
 
@@ -18,6 +19,8 @@ except ImportError:
     HAS_PYGMENTS = False
 
 __all__ = ['DummyStyler', 'PPHighlighter', 'Styler']
+
+Vt100_Output._fds_not_a_terminal.add(None)  # pylint: disable=protected-access
 
 
 class StyledElement(pp.ParserElement):
