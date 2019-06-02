@@ -4,11 +4,13 @@ from pathlib import Path
 
 from setuptools import setup
 
+from pp_highlighting import __version__
+
 BASE = Path(__file__).resolve().parent
 
 setup(
     name='pyparsing-highlighting',
-    version='0.2.6',
+    version=__version__,
     description='Syntax highlighting for prompt_toolkit and HTML with pyparsing.',
     long_description=(BASE / 'README.rst').read_text(),
     url='https://github.com/crowsonkb/pyparsing-highlighting',
