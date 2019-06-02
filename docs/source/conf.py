@@ -71,7 +71,7 @@ language = None
 exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'default'
+pygments_style = 'friendly'
 
 smartquotes = True
 highlight_language = 'python3'
