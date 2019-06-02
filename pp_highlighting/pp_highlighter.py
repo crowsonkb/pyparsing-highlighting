@@ -7,8 +7,13 @@ from prompt_toolkit import print_formatted_text
 from prompt_toolkit.formatted_text import (FormattedText, PygmentsTokens,
                                            split_lines, to_formatted_text)
 from prompt_toolkit.lexers import Lexer
-from pygments.token import STANDARD_TYPES, Token
 import pyparsing as pp
+
+try:
+    from pygments.token import STANDARD_TYPES, Token
+    HAS_PYGMENTS = True
+except ImportError:
+    HAS_PYGMENTS = False
 
 __all__ = ['DummyStyler', 'PPHighlighter', 'Styler']
 
@@ -164,6 +169,8 @@ class PPHighlighter(Lexer):
                 using Pygments tokens.
         """
         self.styler = Styler()
+        if uses_pygments_tokens and not HAS_PYGMENTS:
+            raise ImportError('Pygments must be installed to use Pygments tokens.')
         self.uses_pygments_tokens = uses_pygments_tokens
         self.expr = parser_factory(self.styler)
         self.expr.parseWithTabs()

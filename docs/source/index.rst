@@ -13,9 +13,9 @@ Requirements
 ------------
 
 - `Python <https://www.python.org>`_ 3.5+
-- `prompt_toolkit <https://github.com/prompt-toolkit/python-prompt-toolkit>`_ 2.0+
-- `Pygments <http://pygments.org>`_
 - `pyparsing <https://github.com/pyparsing/pyparsing>`_
+- `prompt_toolkit <https://github.com/prompt-toolkit/python-prompt-toolkit>`_ 2.0+
+- `Pygments <http://pygments.org>`_ (optional)
 
 Installation
 ------------

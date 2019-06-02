@@ -6,11 +6,16 @@ import unittest
 
 from prompt_toolkit.document import Document
 from prompt_toolkit.formatted_text import FormattedText
-from pygments.token import Token
 import pyparsing as pp
 from pyparsing import pyparsing_common as ppc
 
 from pp_highlighting import PPHighlighter
+
+try:
+    from pygments.token import Token
+    HAS_PYGMENTS = True
+except ImportError:
+    HAS_PYGMENTS = False
 
 
 def parser_factory(styler):
@@ -197,11 +202,18 @@ class TestPPHighlighter(unittest.TestCase):
         expected = '<pre class="highlight">(<span class="number-int">1</span>)</pre>'
         self.assertEqual(html, expected)
 
+    @unittest.skipIf(HAS_PYGMENTS, 'Pygments installed.')
+    def test_pygments_not_installed(self):
+        with self.assertRaises(ImportError):
+            PPHighlighter(parser_factory_pygments, uses_pygments_tokens=True)
+
+    @unittest.skipUnless(HAS_PYGMENTS, 'Pygments not installed.')
     def test_pygments_class(self):
         pph = PPHighlighter(parser_factory_pygments, uses_pygments_tokens=True)
         fragments = pph.highlight('(1)')
         self.assertTrue(isinstance(fragments, FormattedText))
 
+    @unittest.skipUnless(HAS_PYGMENTS, 'Pygments not installed.')
     def test_pygments_tokens(self):
         pph = PPHighlighter(parser_factory_pygments, uses_pygments_tokens=True)
         fragments = pph.highlight('(1)')
@@ -210,18 +222,21 @@ class TestPPHighlighter(unittest.TestCase):
                     ('class:pygments.text', ')')]
         self.assertEqual(fragments, expected)
 
+    @unittest.skipUnless(HAS_PYGMENTS, 'Pygments not installed.')
     def test_html_pygments(self):
         pph = PPHighlighter(parser_factory_pygments, uses_pygments_tokens=True)
         html = pph.highlight_html('(1)')
         expected = '<pre class="highlight">(<span class="mi">1</span>)</pre>'
         self.assertEqual(html, expected)
 
+    @unittest.skipUnless(HAS_PYGMENTS, 'Pygments not installed.')
     def test_html_pygments_css_class(self):
         pph = PPHighlighter(parser_factory_pygments, uses_pygments_tokens=True)
         html = pph.highlight_html('(1)', css_class='hl')
         expected = '<pre class="hl">(<span class="mi">1</span>)</pre>'
         self.assertEqual(html, expected)
 
+    @unittest.skipUnless(HAS_PYGMENTS, 'Pygments not installed.')
     def test_html_pygments_subtype(self):
         pph = PPHighlighter(parser_factory_pygments_subtype, uses_pygments_tokens=True)
         html = pph.highlight_html('(1)')
